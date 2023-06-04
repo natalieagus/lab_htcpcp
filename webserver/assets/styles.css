@@ -1,0 +1,263 @@
+html,
+body,
+header,
+figure {
+  margin: 0;
+  word-wrap: break-word;
+  overflow-x: hidden;
+}
+a {
+  text-decoration: none;
+  color: #a784e3;
+  font-weight: bold;
+  cursor: pointer;
+}
+html {
+  background-color: #ffffff;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+}
+option {
+  color: #46385b;
+  font-weight: normal;
+}
+main {
+  max-width: 100vh;
+  width: 85%;
+  margin: auto;
+  margin-top: 10px;
+}
+nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 10px 0;
+}
+p,
+code,
+li {
+  font-size: 1.0625rem;
+  color: #2a2139;
+}
+button {
+  background-color: #c794ff;
+  border-radius: 10px;
+  padding: 10px;
+  display: inline-block;
+}
+nav,
+footer ul {
+  display: flex;
+}
+nav ul li {
+  display: inline-block;
+  padding-left: 10px;
+}
+ul {
+  list-style-type: none;
+}
+h1 {
+  font-size: 2rem;
+}
+.social_interaction,
+.webmention {
+  border-radius: 10px;
+  background: white;
+  padding: 30px;
+}
+.social_interaction {
+  margin-bottom: 10px;
+}
+@media screen and (max-width: 900px) {
+  .main-photo {
+    float: none !important;
+    margin-left: 0;
+  }
+  .flex_left_home,
+  .flex_right_home {
+    flex: 0 100%;
+  }
+
+  .blog img,
+  .flex_right_home {
+    margin-left: 0 !important;
+  }
+
+  nav li {
+    margin-bottom: 10px;
+  }
+}
+input {
+  min-width: 50%;
+  text-align: center;
+  box-sizing: border-box;
+  width: 100%;
+  margin-bottom: 15px;
+  font-size: 16px;
+  padding: 10px;
+  border-radius: 5px;
+  border: transparent;
+  background-color: #f3edfb;
+}
+
+h2,
+h1,
+h3 {
+  color: #755d9c;
+}
+
+summary {
+  padding-top: 5px;
+}
+details > p {
+  margin-bottom: 0px;
+}
+
+p,
+li,
+h1,
+h2,
+h3 {
+  line-height: 1.5em;
+}
+.e-content,
+.other-posts,
+.webmention {
+  max-width: 35em;
+  margin: auto;
+  margin-bottom: 10px;
+}
+
+a:focus {
+  color: white;
+  outline: lightblue 2px;
+  border-bottom: 2px dotted black;
+}
+
+a:hover {
+  color: #5d4a7b;
+  border-bottom: 0.5px solid #5d4a7b;
+}
+input[type="text"],
+input[type="url"],
+input[type="number"],
+textarea {
+  padding: 10px;
+  border-radius: 10px;
+  margin-bottom: 10px;
+  display: inline-block;
+  text-align: left;
+  min-width: 50%;
+  font-size: 1.0625rem;
+}
+
+input[type="text"],
+input[type="url"] {
+  width: 100%;
+}
+input[type="submit"] {
+  padding: 10px;
+  margin-top: 10px;
+  border: none;
+  background-color: #1b1721;
+  color: white;
+  border-radius: 10px;
+  min-width: 0 !important;
+  appearance: none;
+  font-size: 1.1875rem;
+}
+section ul {
+  list-style-type: disc;
+}
+select {
+  width: 100%;
+  margin-bottom: 15px;
+  font-size: 16px;
+  padding: 10px;
+  border-radius: 5px;
+  border: transparent;
+  line-height: 30px;
+  background-color: #f3edfb;
+  max-height: 300px;
+}
+
+select:focus {
+  outline: 2px solid #46385b !important;
+}
+
+table {
+  text-align: left;
+  table-layout: fixed;
+  width: 100%;
+}
+td,
+th {
+  padding: 10px;
+}
+@media print {
+  html {
+    background-color: white;
+  }
+  body {
+    width: 100%;
+    margin-left: 10px;
+    margin-right: 10px;
+  }
+  nav,
+  footer,
+  .accessibility_label,
+  .print_message,
+  .announcement {
+    display: none;
+  }
+  h1,
+  h2,
+  h3 {
+    color: black !important;
+  }
+  a:after {
+    content: "(" attr(href) ")";
+    display: inline-block;
+    width: auto;
+    text-decoration: none;
+    margin-left: 0.3em;
+    font-style: italic;
+  }
+}
+@media only screen and (max-width: 750px) {
+  .special-image img,
+  .blogList img,
+  .not_found img {
+    width: 100% !important;
+  }
+}
+
+/* Reponsive table code below from https://allthingssmitty.com/2016/10/03/responsive-table-layout/ */
+@media screen and (max-width: 900px) {
+  table thead {
+    border: none;
+    clip: rect(0 0 0 0);
+    height: 1px;
+    margin: -1px;
+    overflow: hidden;
+    padding: 0;
+    position: absolute;
+    width: 1px;
+  }
+
+  table tr {
+    border-bottom: 1px solid #ddd;
+    display: block;
+  }
+
+  table td {
+    border-bottom: 1px solid #ddd;
+    display: block;
+    text-align: right;
+  }
+
+  table td::before {
+    content: attr(data-label);
+    float: left;
+  }
+}
