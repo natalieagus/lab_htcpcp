@@ -180,7 +180,7 @@ def main():
                         "HTCPCP/1.1 200 OK\r\n",
                         "Server: CoffeePot\r\n",
                         "Content-Type: message/coffeepot\r\n",
-                        "Date: " + current_date + "\r\n",
+                        "Date: " + current_date + "\r\n\r\n",
                     ]
 
                     response = create_request_response(

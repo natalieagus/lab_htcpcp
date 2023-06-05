@@ -85,7 +85,7 @@ def index():
             message = message + "\nAccept-Additions: " + "; ".join(additions)
         if pots:
             message = message + "\nUse-Pot: " + "; ".join(pots)
-        message = message + "\r\n" + message_for_server
+        message = message + "\r\n\r\n" + message_for_server
 
     elif method == "when":
         message = "WHEN coffee://ducky HTTP/1.1\nContent-Type: application/coffee-pot-command"
