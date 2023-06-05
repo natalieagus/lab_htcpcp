@@ -63,9 +63,9 @@ function htcpcp_proto.dissector(buffer, pinfo, tree)
 	
 	-- Parse the contents of the packet
 	local msg = buffer(0, length):string()
-	local lines = split(msg, "\r\n\r\n", 1)         -- a double CRLF divides the startline & headers from the HTTP body.
+	local lines = split(msg, "\r\n\r\n", 2)         	-- a double CRLF divides the startline & headers from the HTTP body.
 
-	local headers = split(lines[1], "[\r\n]", -1)   -- a CRLF divides the headers from each other (by right). Here, we allow for LFs too.
+	local headers = split(lines[1], "[\n(\r\n)]", -1)   -- a CRLF divides the headers from each other (by right). Here, we allow for LFs too.
 	local body = ""
 
 	if #lines == 2 then
@@ -97,24 +97,25 @@ function htcpcp_proto.dissector(buffer, pinfo, tree)
 	---- So we simply check if a header is valid (i.e. is formatted as `key: value`, where `key` consists of 
 	---- alphanumeric characters or a dash). If not valid, we assume it's part of the body.
 	for i, header in ipairs(headers) do
+		local header_valid = false
+		header = trim(header)
 		if header:len() ~= 0 then
 			local parts = split(header, ":", 2)
-		if #parts == 2 then
-			key = trim(parts[1])
-			value = trim(parts[2])
+			if #parts == 2 then
+				key = trim(parts[1])
+				value = trim(parts[2])
 
-			-- Check if key is valid
-			if string.find(key, "^([%d%a-]+)$") then
+				-- Only add if key is valid
+				if string.find(key, "^([%d%a-]+)$") then
 					htcpcp_tree:add(parts[1]..": "..parts[2])
-				else
-					-- Key is invalid, this is probably part of the body.
-					body = header..body
+					header_valid = true
+				end
 			end
-		else
-			-- Header is invalid, this is probably part of the body.
-			body = header..body
+			if not header_valid then
+				print("Warning: Invalid header: "..header)
+			end
 		end
-		end
+
 	end
 
 	-- Defines HTCPCP Data tree to be displayed as well.
