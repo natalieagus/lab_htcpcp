@@ -20250,3 +20250,271 @@ Date: Mon, 05 Jun 2023 22:55:46
 {"date": "Mon, 05 Jun 2023 22:55:18", "beverage_type": "Coffee", "additions": ["cream", " half-and-half", " whole-milk", " part-skim", " skim", " non-dairy", " vanilla", " almond", " raspberry", " chocolate", " whisky", " rum", " kahlua", " aquavit"], "brew_time_end": "Mon, 05 Jun 2023 22:55:28", "pouring_milk": "Mon, 05 Jun 2023 22:55:28", "coffee_bean": {"name": "1910 Coffee", "profile": "Fruity", "origin": "N/A", "type": "Fine Flavoured", "strength": "1.5/5", "roast": "Medium"}}
 INFO:root:Closing connection
 INFO:root:Connection closed
+INFO:root:Received message: GET coffee://ducky HTTP/1.1
+Content-Type: application/coffee-pot-command
+
+INFO:root:Sending response: HTCPCP/1.1 200 OK
+Server: CoffeePot
+Content-Type: message/coffeepot
+Date: Mon, 05 Jun 2023 23:05:53
+
+{}
+INFO:root:Closing connection
+INFO:root:Connection closed
+INFO:root:Received message: GET coffee://ducky HTTP/1.1
+Content-Type: application/coffee-pot-command
+
+INFO:root:Closing connection
+INFO:root:Connection closed
+INFO:root:Received message: GET coffee://ducky HTTP/1.1
+Content-Type: application/coffee-pot-command
+
+INFO:root:Closing connection
+INFO:root:Connection closed
+INFO:root:Received message: GET coffee://ducky HTTP/1.1
+Content-Type: application/coffee-pot-command
+
+
+INFO:root:Closing connection
+INFO:root:Connection closed
+INFO:root:Received message: BREW coffee://ducky HTTP/1.1
+Content-Type: application/coffee-pot-command
+Accept-Additions: cream; half-and-half; whole-milk; part-skim; skim; non-dairy; vanilla; almond; raspberry; chocolate; whisky; rum
+Use-Pot: ducky
+
+start
+INFO:root:Closing connection
+INFO:root:Connection closed
+INFO:root:Received message: GET coffee://ducky HTTP/1.1
+Content-Type: application/coffee-pot-command
+
+
+INFO:root:Closing connection
+INFO:root:Connection closed
+INFO:root:Received message: BREW coffee://ducky HTTP/1.1
+Content-Type: application/coffee-pot-command
+Use-Pot: ducky
+
+start
+INFO:root:Closing connection
+INFO:root:Connection closed
+INFO:root:Received message: GET coffee://ducky HTTP/1.1
+Content-Type: application/coffee-pot-command
+
+
+INFO:root:Closing connection
+INFO:root:Connection closed
+INFO:root:Received message: GET coffee://ducky HTTP/1.1
+Content-Type: application/coffee-pot-command
+
+
+INFO:root:Closing connection
+INFO:root:Connection closed
+INFO:root:Received message: BREW coffee://ducky HTTP/1.1
+Content-Type: application/coffee-pot-command
+Accept-Additions: cream
+Use-Pot: ducky
+
+start
+INFO:root:Closing connection
+INFO:root:Connection closed
+INFO:root:Received message: GET coffee://ducky HTTP/1.1
+Content-Type: application/coffee-pot-command
+
+
+INFO:root:Closing connection
+INFO:root:Connection closed
+INFO:root:Received message: GET coffee://ducky HTTP/1.1
+Content-Type: application/coffee-pot-command
+
+
+INFO:root:Closing connection
+INFO:root:Connection closed
+INFO:root:Received message: BREW coffee://ducky HTTP/1.1
+Content-Type: application/coffee-pot-command
+Accept-Additions: cream; half-and-half; whole-milk; part-skim
+Use-Pot: ducky
+
+start
+INFO:root:Closing connection
+INFO:root:Connection closed
+INFO:root:Received message: GET coffee://ducky HTTP/1.1
+Content-Type: application/coffee-pot-command
+
+
+INFO:root:Closing connection
+INFO:root:Connection closed
+INFO:root:Received message: GET coffee://ducky HTTP/1.1
+Content-Type: application/coffee-pot-command
+
+
+INFO:root:Sending response: HTCPCP/1.1 200 OK
+Server: CoffeePot
+Content-Type: message/coffeepot
+Date: Mon, 05 Jun 2023 23:10:03
+
+{}
+INFO:root:Closing connection
+INFO:root:Connection closed
+INFO:root:Received message: BREW coffee://ducky HTTP/1.1
+Content-Type: application/coffee-pot-command
+Accept-Additions: cream
+Use-Pot: ducky
+
+start
+INFO:root:Sending response: HTCPCP/1.1 200 OK
+Server: CoffeePot
+Content-Type: message/coffeepot
+Date: Mon, 05 Jun 2023 23:10:04
+
+
+INFO:root:Closing connection
+INFO:root:Connection closed
+INFO:root:Received message: GET coffee://ducky HTTP/1.1
+Content-Type: application/coffee-pot-command
+
+
+INFO:root:Sending response: HTCPCP/1.1 200 OK
+Server: CoffeePot
+Content-Type: message/coffeepot
+Date: Mon, 05 Jun 2023 23:10:04
+
+{"date": "Mon, 05 Jun 2023 23:10:04", "beverage_type": "Coffee", "additions": ["cream"], "brew_time_end": "Mon, 05 Jun 2023 23:10:14", "pouring_milk": "Mon, 05 Jun 2023 23:10:14", "coffee_bean": {"name": "Flores del Caf\u00e9 Superior Coffee", "profile": "Floral, Fruity, Malty", "origin": "Nicaragua, Central America And The Caribbean", "type": "Single Origin", "strength": "1.5/5", "roast": "Medium light"}}
+INFO:root:Closing connection
+INFO:root:Connection closed
+INFO:root:Received message: GET coffee://ducky HTTP/1.1
+Content-Type: application/coffee-pot-command
+
+
+INFO:root:Sending response: HTCPCP/1.1 200 OK
+Server: CoffeePot
+Content-Type: message/coffeepot
+Date: Mon, 05 Jun 2023 23:10:15
+
+{"date": "Mon, 05 Jun 2023 23:10:04", "beverage_type": "Coffee", "additions": ["cream"], "brew_time_end": "Mon, 05 Jun 2023 23:10:14", "pouring_milk": "Mon, 05 Jun 2023 23:10:14", "coffee_bean": {"name": "Flores del Caf\u00e9 Superior Coffee", "profile": "Floral, Fruity, Malty", "origin": "Nicaragua, Central America And The Caribbean", "type": "Single Origin", "strength": "1.5/5", "roast": "Medium light"}}
+INFO:root:Closing connection
+INFO:root:Connection closed
+INFO:root:Received message: GET coffee://ducky HTTP/1.1
+Content-Type: application/coffee-pot-command
+
+
+INFO:root:Sending response: HTCPCP/1.1 200 OK
+Server: CoffeePot
+Content-Type: message/coffeepot
+Date: Mon, 05 Jun 2023 23:10:20
+
+{}
+INFO:root:Closing connection
+INFO:root:Connection closed
+INFO:root:Received message: BREW coffee://ducky HTTP/1.1
+Content-Type: application/coffee-pot-command
+Accept-Additions: cream; half-and-half; whole-milk; part-skim; skim; non-dairy; vanilla; almond; raspberry; chocolate
+Use-Pot: ducky
+
+start
+INFO:root:Sending response: HTCPCP/1.1 200 OK
+Server: CoffeePot
+Content-Type: message/coffeepot
+Date: Mon, 05 Jun 2023 23:10:22
+
+
+INFO:root:Closing connection
+INFO:root:Connection closed
+INFO:root:Received message: GET coffee://ducky HTTP/1.1
+Content-Type: application/coffee-pot-command
+
+
+INFO:root:Sending response: HTCPCP/1.1 200 OK
+Server: CoffeePot
+Content-Type: message/coffeepot
+Date: Mon, 05 Jun 2023 23:10:22
+
+{"date": "Mon, 05 Jun 2023 23:10:22", "beverage_type": "Coffee", "additions": ["cream", " half-and-half", " whole-milk", " part-skim", " skim", " non-dairy", " vanilla", " almond", " raspberry", " chocolate"], "brew_time_end": "Mon, 05 Jun 2023 23:10:32", "pouring_milk": "Mon, 05 Jun 2023 23:10:32", "coffee_bean": {"name": "Para\u00edso Gold Coffee", "profile": "Chocolate, Floral, Fruity, Malty, Nutty", "origin": "Brazil, South America", "type": "Single Origin", "strength": "2/5", "roast": "Medium light"}}
+INFO:root:Closing connection
+INFO:root:Connection closed
+INFO:root:Received message: BREW coffee://ducky HTTP/1.1
+Content-Type: application/coffee-pot-command
+
+stop
+INFO:root:Sending response: HTCPCP/1.1 200 OK
+Server: CoffeePot
+Content-Type: message/coffeepot
+Date: Mon, 05 Jun 2023 23:10:24
+
+
+INFO:root:Closing connection
+INFO:root:Connection closed
+INFO:root:Received message: GET coffee://ducky HTTP/1.1
+Content-Type: application/coffee-pot-command
+
+
+INFO:root:Sending response: HTCPCP/1.1 200 OK
+Server: CoffeePot
+Content-Type: message/coffeepot
+Date: Mon, 05 Jun 2023 23:10:24
+
+{}
+INFO:root:Closing connection
+INFO:root:Connection closed
+INFO:root:Received message: BREW coffee://ducky HTTP/1.1
+Content-Type: application/coffee-pot-command
+Accept-Additions: cream
+Use-Pot: ducky
+
+start
+INFO:root:Sending response: HTCPCP/1.1 200 OK
+Server: CoffeePot
+Content-Type: message/coffeepot
+Date: Mon, 05 Jun 2023 23:10:25
+
+
+INFO:root:Closing connection
+INFO:root:Connection closed
+INFO:root:Received message: GET coffee://ducky HTTP/1.1
+Content-Type: application/coffee-pot-command
+
+
+INFO:root:Sending response: HTCPCP/1.1 200 OK
+Server: CoffeePot
+Content-Type: message/coffeepot
+Date: Mon, 05 Jun 2023 23:10:25
+
+{"date": "Mon, 05 Jun 2023 23:10:25", "beverage_type": "Coffee", "additions": ["cream"], "brew_time_end": "Mon, 05 Jun 2023 23:10:35", "pouring_milk": "Mon, 05 Jun 2023 23:10:35", "coffee_bean": {"name": "Star of Hanoi Coffee", "profile": "Spice", "origin": "Vietnam, Asia", "type": "Single Origin", "strength": "2.5/5", "roast": "Medium dark"}}
+INFO:root:Closing connection
+INFO:root:Connection closed
+INFO:root:Received message: PROPFIND coffee://ducky HTTP/1.1
+Content-Type: application/coffee-pot-command
+
+
+INFO:root:Sending response: HTCPCP/1.1 200 OK
+Server: CoffeePot
+Content-Type: message/coffeepot
+Date: Mon, 05 Jun 2023 23:10:26
+
+{"name": "Star of Hanoi Coffee", "profile": "Spice", "origin": "Vietnam, Asia", "type": "Single Origin", "strength": "2.5/5", "roast": "Medium dark"}
+INFO:root:Closing connection
+INFO:root:Connection closed
+INFO:root:Received message: GET coffee://ducky HTTP/1.1
+Content-Type: application/coffee-pot-command
+
+
+INFO:root:Sending response: HTCPCP/1.1 200 OK
+Server: CoffeePot
+Content-Type: message/coffeepot
+Date: Mon, 05 Jun 2023 23:10:27
+
+{"date": "Mon, 05 Jun 2023 23:10:25", "beverage_type": "Coffee", "additions": ["cream"], "brew_time_end": "Mon, 05 Jun 2023 23:10:35", "pouring_milk": "Mon, 05 Jun 2023 23:10:35", "coffee_bean": {"name": "Star of Hanoi Coffee", "profile": "Spice", "origin": "Vietnam, Asia", "type": "Single Origin", "strength": "2.5/5", "roast": "Medium dark"}}
+INFO:root:Closing connection
+INFO:root:Connection closed
+INFO:root:Received message: GET coffee://ducky HTTP/1.1
+Content-Type: application/coffee-pot-command
+
+
+INFO:root:Sending response: HTCPCP/1.1 200 OK
+Server: CoffeePot
+Content-Type: message/coffeepot
+Date: Mon, 05 Jun 2023 23:10:36
+
+{"date": "Mon, 05 Jun 2023 23:10:25", "beverage_type": "Coffee", "additions": ["cream"], "brew_time_end": "Mon, 05 Jun 2023 23:10:35", "pouring_milk": "Mon, 05 Jun 2023 23:10:35", "coffee_bean": {"name": "Star of Hanoi Coffee", "profile": "Spice", "origin": "Vietnam, Asia", "type": "Single Origin", "strength": "2.5/5", "roast": "Medium dark"}}
+INFO:root:Closing connection
+INFO:root:Connection closed

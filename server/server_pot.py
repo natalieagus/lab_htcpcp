@@ -121,7 +121,7 @@ def main():
                         f.write("{}")
 
             url = message.split(" ")[1]
-            headers = message.split("\n")
+            headers = message.split("\r\n")
 
             content_type = [
                 header
@@ -135,7 +135,7 @@ def main():
                 message = last_request
                 method = message.split(" ")[0]
                 url = message.split(" ")[1]
-                headers = message.split("\n")
+                headers = message.split("\r\n")
 
             try:
                 requested_pot = (
@@ -289,7 +289,7 @@ def create_request_response(method, message, additions, pouring_milk):
         response = json.dumps(coffee_bean)
 
     elif method == "BREW" or method == "POST":
-        response_body = message.split("\n")[-1]
+        response_body = message.split("\r\n\r\n")[-1]
 
         if response_body == "stop":
             with open(brewing_file, "w+") as f:

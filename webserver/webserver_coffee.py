@@ -80,18 +80,18 @@ def index():
     if (method == "brew" or method == "post") and (
         message_for_server == "start" or message_for_server == "stop"
     ):
-        message = "BREW coffee://ducky HTTP/1.1\nContent-Type: application/coffee-pot-command"
+        message = "BREW coffee://ducky HTTP/1.1\r\nContent-Type: application/coffee-pot-command"
         if additions:
-            message = message + "\nAccept-Additions: " + "; ".join(additions)
+            message = message + "\r\nAccept-Additions: " + "; ".join(additions)
         if pots:
-            message = message + "\nUse-Pot: " + "; ".join(pots)
+            message = message + "\r\nUse-Pot: " + "; ".join(pots)
         message = message + "\r\n\r\n" + message_for_server
 
     elif method == "when":
-        message = "WHEN coffee://ducky HTTP/1.1\nContent-Type: application/coffee-pot-command"
+        message = "WHEN coffee://ducky HTTP/1.1\r\nContent-Type: application/coffee-pot-command\r\n\r\n"
 
     elif method == "propfind":
-        message = "PROPFIND coffee://ducky HTTP/1.1\nContent-Type: application/coffee-pot-command"
+        message = "PROPFIND coffee://ducky HTTP/1.1\r\nContent-Type: application/coffee-pot-command\r\n\r\n"
         return handle_coffee_data(message)
 
     else:
@@ -128,7 +128,7 @@ def handle_homepage_render():
     server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     server.connect((HOST, PORT))
 
-    message = "GET coffee://ducky HTTP/1.1\nContent-Type: application/coffee-pot-command\n"
+    message = "GET coffee://ducky HTTP/1.1\r\nContent-Type: application/coffee-pot-command\r\n\r\n"
 
     server.send(bytes(message.encode()))
 
