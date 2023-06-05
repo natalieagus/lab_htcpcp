@@ -30,17 +30,6 @@ import socket
 import json
 import os
 
-# Set seed
-random.seed(datetime.datetime.now().timestamp())
-
-# setup logs
-logging.basicConfig(filename="log/coffeepot.log", level=logging.DEBUG)
-
-# instantiate server
-server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-server.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-server.bind((HOST, PORT))
-
 # standard constants
 brewing_file = "db/currently_brewing.json"
 past_coffee_file = "db/past_coffees.json"
@@ -50,14 +39,166 @@ not_found_message = b"HTCPCP/1.1 404 Not Found\r\n\r\n"
 pouring_milk = None
 last_request = None
 
-# rewrite the currently brewing file every time the program starts up
-# a coffee pot that has been stopped in the middle of operation should not pick up where it left off (!)
-with open(brewing_file, "w+") as f:
-    f.write("{}")
 
-if not os.path.isfile(past_coffee_file):
-    with open(past_coffee_file, "w+") as f:
-        f.write("")
+def main():
+    global pouring_milk
+    global last_request
+    # Set seed
+    random.seed(datetime.datetime.now().timestamp())
+
+    # setup logs
+    logging.basicConfig(filename="log/coffeepot.log", level=logging.DEBUG)
+
+    # instantiate server
+    server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    server.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+    server.bind((HOST, PORT))
+
+    # rewrite the currently brewing file every time the program starts up
+    # a coffee pot that has been stopped in the middle of operation should not pick up where it left off (!)
+    with open(brewing_file, "w+") as f:
+        f.write("{}")
+
+    if not os.path.isfile(past_coffee_file):
+        with open(past_coffee_file, "w+") as f:
+            f.write("")
+
+    # start listening for connections
+    server.listen()
+    print("Listening for connections on port " + str(PORT))
+    while True:
+        connection, address = server.accept()
+
+        # set timeout so requests cannot hang
+        connection.settimeout(5)
+
+        print("\n====================\nConnected to: ", address)
+
+        processing_request = True
+
+        while processing_request:
+            # get message
+            message = connection.recv(1024)
+            now = datetime.datetime.now().strftime(TIME_STRING_FORMAT)
+            print(f"Message received at {now}:\n{message}")
+            message = message.decode()
+
+            last_request = message
+
+            if len(message.strip().replace("\n", "").replace("\r", "")) == 0:
+                processing_request = False
+
+            logging.info("Received message: " + message)
+
+            # get last coffee
+            with open(brewing_file, "r") as f:
+                last_coffee = json.load(f)
+
+            method = message.split(" ")[0]
+            if (
+                last_coffee
+                and last_coffee["brew_time_end"]
+                and (method == "BREW" or method == "POST")
+            ):
+                # get last_coffee["brew_time_end"] as datetime object
+                last_brewed = datetime.datetime.strptime(
+                    last_coffee["brew_time_end"], TIME_STRING_FORMAT
+                )
+                if (
+                    last_brewed + datetime.timedelta(seconds=10)
+                    > datetime.datetime.now()
+                ):
+                    response = (
+                        "HTCPCP/1.1 406 Not Acceptable\r\n\r\n"
+                        + ", ".join(list(ACCEPTED_ADDITIONS.keys())).strip(
+                            ", "
+                        )
+                    )
+                    connection.send(bytes(response.encode()))
+                    processing_request = False
+                else:
+                    with open(brewing_file, "w+") as f:
+                        f.write("{}")
+
+            url = message.split(" ")[1]
+            headers = message.split("\n")
+
+            content_type = [
+                header
+                for header in headers
+                if header.startswith("Content-Type")
+            ]
+
+            safe = [header for header in headers if header.startswith("Safe:")]
+
+            if safe and safe[0] == "Yes":
+                message = last_request
+                method = message.split(" ")[0]
+                url = message.split(" ")[1]
+                headers = message.split("\n")
+
+            try:
+                requested_pot = (
+                    [
+                        header
+                        for header in headers
+                        if header.startswith("Use-Pot")
+                    ][0]
+                    .split(":")[1]
+                    .strip()
+                    .split(";")
+                )
+                requested_pot = requested_pot[0]
+            except Exception as e:
+                requested_pot = ""
+
+            processing_request = ensure_request_is_valid(
+                url,
+                content_type,
+                method,
+                connection,
+                requested_pot,
+            )
+
+            if processing_request:
+
+                (
+                    additions,
+                    processing_request,
+                    pouring_milk,
+                ) = process_additions(
+                    headers, processing_request, pouring_milk, connection
+                )
+
+                if method in ACCEPTED_METHODS:
+                    current_date = datetime.datetime.now().strftime(
+                        TIME_STRING_FORMAT
+                    )
+
+                    # response body
+                    headers_to_send = [
+                        "HTCPCP/1.1 200 OK\r\n",
+                        "Server: CoffeePot\r\n",
+                        "Content-Type: message/coffeepot\r\n",
+                        "Date: " + current_date + "\r\n",
+                    ]
+
+                    response = create_request_response(
+                        method, message, additions, pouring_milk
+                    )
+
+                    final_response = "".join(headers_to_send) + response
+
+                    logging.info("Sending response: " + final_response)
+
+                connection.send(bytes(final_response.encode("utf-8")))
+
+            processing_request = False
+
+        # close connection after request has been processed
+        logging.info("Closing connection")
+        connection.close()
+        logging.info("Connection closed")
 
 
 def ensure_request_is_valid(
@@ -132,7 +273,7 @@ def process_additions(headers, processing_request, pouring_milk, connection):
     return additions, processing_request, pouring_milk
 
 
-def create_request_response(method, additions, pouring_milk):
+def create_request_response(method, message, additions, pouring_milk):
     response = ""
 
     if method == "GET":
@@ -211,127 +352,9 @@ def create_request_response(method, additions, pouring_milk):
     return response
 
 
-# start listening for connections
-server.listen()
-print("Listening for connections on port " + str(PORT))
-while True:
-    connection, address = server.accept()
-
-    # set timeout so requests cannot hang
-    connection.settimeout(5)
-
-    print("\n====================\nConnected to: ", address)
-
-    processing_request = True
-
-    while processing_request:
-        # get message
-        message = connection.recv(1024).decode()
-        now = datetime.datetime.now().strftime(TIME_STRING_FORMAT)
-        print(f"Message received at {now}:\n", message)
-
-        last_request = message
-
-        if len(message.strip().replace("\n", "").replace("\r", "")) == 0:
-            processing_request = False
-
-        logging.info("Received message: " + message)
-
-        # get last coffee
-        with open(brewing_file, "r") as f:
-            last_coffee = json.load(f)
-
-        method = message.split(" ")[0]
-        if (
-            last_coffee
-            and last_coffee["brew_time_end"]
-            and (method == "BREW" or method == "POST")
-        ):
-            # get last_coffee["brew_time_end"] as datetime object
-            last_brewed = datetime.datetime.strptime(
-                last_coffee["brew_time_end"], TIME_STRING_FORMAT
-            )
-            if (
-                last_brewed + datetime.timedelta(seconds=10)
-                > datetime.datetime.now()
-            ):
-                response = "HTCPCP/1.1 406 Not Acceptable\r\n\r\n" + ", ".join(
-                    list(ACCEPTED_ADDITIONS.keys())
-                ).strip(", ")
-                connection.send(bytes(response.encode()))
-                processing_request = False
-            else:
-                with open(brewing_file, "w+") as f:
-                    f.write("{}")
-
-        url = message.split(" ")[1]
-        headers = message.split("\n")
-
-        content_type = [
-            header for header in headers if header.startswith("Content-Type")
-        ]
-
-        safe = [header for header in headers if header.startswith("Safe:")]
-
-        if safe and safe[0] == "Yes":
-            message = last_request
-            method = message.split(" ")[0]
-            url = message.split(" ")[1]
-            headers = message.split("\n")
-
-        try:
-            requested_pot = (
-                [header for header in headers if header.startswith("Use-Pot")][
-                    0
-                ]
-                .split(":")[1]
-                .strip()
-                .split(";")
-            )
-            requested_pot = requested_pot[0]
-        except Exception as e:
-            requested_pot = ""
-
-        processing_request = ensure_request_is_valid(
-            url,
-            content_type,
-            method,
-            connection,
-            requested_pot,
-        )
-
-        if processing_request:
-
-            additions, processing_request, pouring_milk = process_additions(
-                headers, processing_request, pouring_milk, connection
-            )
-
-            if method in ACCEPTED_METHODS:
-                current_date = datetime.datetime.now().strftime(
-                    TIME_STRING_FORMAT
-                )
-
-                # response body
-                headers_to_send = [
-                    "HTCPCP/1.1 200 OK\r\n",
-                    "Server: CoffeePot\r\n",
-                    "Content-Type: message/coffeepot\r\n",
-                    "Date: " + current_date + "\r\n",
-                ]
-
-                response = create_request_response(
-                    method, additions, pouring_milk
-                )
-
-                final_response = "".join(headers_to_send) + response
-
-                logging.info("Sending response: " + final_response)
-
-            connection.send(bytes(final_response.encode("utf-8")))
-
-        processing_request = False
-
-    # close connection after request has been processed
-    logging.info("Closing connection")
-    connection.close()
-    logging.info("Connection closed")
+if __name__ == "__main__":
+    try:
+        main()
+    except KeyboardInterrupt:
+        print("Exiting Ducky's Coffeepot Server, Bye!")
+        exit()

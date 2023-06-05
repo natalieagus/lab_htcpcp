@@ -80,18 +80,18 @@ def index():
     if (method == "brew" or method == "post") and (
         message_for_server == "start" or message_for_server == "stop"
     ):
-        message = "BREW coffee://ducky HTTP/1.1\nContent-Type: application/coffee-pot-command\n"
+        message = "BREW coffee://ducky HTTP/1.1\nContent-Type: application/coffee-pot-command"
         if additions:
             message = message + "\nAccept-Additions: " + "; ".join(additions)
         if pots:
             message = message + "\nUse-Pot: " + "; ".join(pots)
-        message = message + "\n" + message_for_server
+        message = message + "\r\n" + message_for_server
 
     elif method == "when":
-        message = "WHEN coffee://ducky HTTP/1.1\nContent-Type: application/coffee-pot-command\n"
+        message = "WHEN coffee://ducky HTTP/1.1\nContent-Type: application/coffee-pot-command"
 
     elif method == "propfind":
-        message = "PROPFIND coffee://ducky HTTP/1.1\nContent-Type: application/coffee-pot-command\n"
+        message = "PROPFIND coffee://ducky HTTP/1.1\nContent-Type: application/coffee-pot-command"
         return handle_coffee_data(message)
 
     else:
@@ -132,12 +132,12 @@ def handle_homepage_render():
 
     server.send(bytes(message.encode()))
 
-    data = server.recv(1024).decode()
+    data = server.recv(1024)
     now = datetime.datetime.now().strftime(TIME_STRING_FORMAT)
     print(
-        f"\n=======================\nReceived data from server at {now}:\n",
-        data,
+        f"\n=======================\nReceived data from server at {now}:\n{data}",
     )
+    data = data.decode()
 
     brewing = False
     additions = ""
