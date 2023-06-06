@@ -13,21 +13,21 @@ Installing this would label the relevant packets as HTCPCP, making your life eas
 - **Note**: This disassembler does not account for [TCP packet reassembly](https://www.wireshark.org/docs/wsug_html_chunked/ChAdvReassemblySection.html) even though it is [recommended by the documentation](https://wiki.wireshark.org/Lua/Dissectors). I don't know enough about Lua to do that.
 
 ## Installation
-1. Ensure the local plugins directory for Wireshark exists.
-    - This would be `~/.local/lib/wireshark/plugins` in Linux systems, and in `~\AppData\Roaming\Wireshark\plugins` on Windows.
-    - If you're using `cmd` (why?), `~` won't work. Replace it with `%USERPROFILE%` or just `C:\Users\[your username]`.
-
-
-    Do **create** the directory if it's missing.
+1. Check where the *personal* plugins directory for Wireshark.
+    - In Wireshark, go to `Help > About Wireshark`, and view the `Folders` tab. Your personal plugins directory would be the path referred to by `Personal Lua Plugins`.
+    - Alternatively, you can check [this link](https://www.wireshark.org/docs/wsug_html_chunked/ChPluginFolders.html) for OS-specific directory locations. 
+    - **Note**: For Windows, `%APPDATA%` refers to `C:\Users\[your username]\AppData\Roaming`.
+    
+2. Do **create** the directory if it's missing.
 
     ```bash
-    mkdir -p [local plugin directory]
+    mkdir -p [personal plugins directory]
     ```
-2. Copy `htcpcp.lua` to the plugins directory.
+3. Copy `htcpcp.lua` to the personal plugins directory.
     ```bash
-    cp ./dissector/htcpcp.lua [local plugin directory]
+    cp ./dissector/htcpcp.lua [personal plugins directory]
     ```
-3. Re-open Wireshark, or reload the plugins with `CTRL-SHIFT-L`.
+4. Re-open Wireshark, or reload the plugins with `CTRL-SHIFT-L`.
 
 
 ## Usage
