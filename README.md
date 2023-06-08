@@ -2,8 +2,8 @@
 
 This project implements the [HTCPCP](https://datatracker.ietf.org/doc/html/rfc2324), a protocol defined by the IETF for controlling, monitoring, and diagnosing coffee pots. This is particularly useful to operate coffee pots remotely. There are two main parts to run:
 
-1. A HTCPCP compliant Coffee Pot Server: implemented in Python using the socket library that accepts requests from coffee:// URI scheme (instead of http or https).
-2. A regular HTTP-based web client, served using Python Flask. This helps you send HTCPCP requests to the coffee pot server.
+1. A HTCPCP compliant Coffee Pot **Server**: implemented in Python using the socket library that accepts requests from `coffee://` URI scheme (instead of http or https).
+2. A full-stack web application (using Python Flask) that serves a regular HTTP-based web client and also help you send HTCPCP requests to the coffee pot server using your web browser.
 
 ## System requirements
 
