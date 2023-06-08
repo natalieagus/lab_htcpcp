@@ -14,12 +14,12 @@ sys.path.append(config_dir)
 
 from config import (
     HOST,
+    LOCALHOST,
     PORT,
     ACCEPTED_COFFEE_SCHEMES,
     ACCEPTED_METHODS,
     MILKS,
     ACCEPTED_ADDITIONS,
-    COFFEE_POTS,
     COFFEE_BEANS,
     TIME_STRING_FORMAT,
     COFFEE_BEANS_VARIETY,
@@ -40,7 +40,7 @@ pouring_milk = None
 last_request = None
 
 
-def main():
+def main(argv):
     global pouring_milk
     global last_request
     # Set seed
@@ -52,7 +52,14 @@ def main():
     # instantiate server
     server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     server.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-    server.bind((HOST, PORT))
+
+    # Get the local machine's IP address
+    host = HOST
+
+    if len(sys.argv) > 1 and sys.argv[1] == "-local":
+        host = LOCALHOST
+
+    server.bind((host, PORT))
 
     # rewrite the currently brewing file every time the program starts up
     # a coffee pot that has been stopped in the middle of operation should not pick up where it left off (!)
@@ -65,9 +72,11 @@ def main():
 
     # start listening for connections
     CHECK_INTERVAL = 1.0
-    server.settimeout(CHECK_INTERVAL) # Check for SIGINT every `CHECK_INTERVAL` seconds
+    server.settimeout(
+        CHECK_INTERVAL
+    )  # Check for SIGINT every `CHECK_INTERVAL` seconds
     server.listen()
-    print("Listening for connections on port " + str(PORT))
+    print(f"Listening for connections on {str(host)}:{str(PORT)}")
     while True:
 
         # Restart `accept` call every cycle, so a `SIGINT` can go through (for Windows)
@@ -361,7 +370,7 @@ def create_request_response(method, message, additions, pouring_milk):
 
 if __name__ == "__main__":
     try:
-        main()
+        main(sys.argv)
     except KeyboardInterrupt:
         print("Exiting Ducky's Coffeepot Server, Bye!")
         exit()

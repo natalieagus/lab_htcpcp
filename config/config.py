@@ -1,5 +1,7 @@
-HOST = "localhost"
+HOST = "0.0.0.0"
+LOCALHOST = "localhost"
 PORT = 5030
+WEBSERVER_PORT = 5031
 ERROR_TEMPLATE = "error.html"
 TIME_STRING_FORMAT = "%a, %d %b %Y %H:%M:%S"
 ACCEPTED_METHODS = ["BREW", "POST", "GET", "PROPFIND", "WHEN"]

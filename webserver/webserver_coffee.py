@@ -24,6 +24,8 @@ sys.path.append(config_dir)
 # import from config.py
 from config import (
     HOST,
+    LOCALHOST,
+    WEBSERVER_PORT,
     PORT,
     ERROR_TEMPLATE,
     MILKS,
@@ -298,7 +300,13 @@ def assets(path):
 if __name__ == "__main__":
     # total arguments, excluding "python"
     n = len(sys.argv)
-    if n > 1 and sys.argv[1] == "-https":  # early termination makes this safe
-        app.run(debug=True, ssl_context="adhoc")
-    else:
-        app.run(debug=True)
+    ssl_context = None
+    host = HOST
+    if "-https" in sys.argv:  # early termination makes this safe
+        ssl_context = "adhoc"
+    if "-local" in sys.argv:
+        host = LOCALHOST
+
+    app.run(
+        debug=True, ssl_context=ssl_context, host=host, port=WEBSERVER_PORT
+    )

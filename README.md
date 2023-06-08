@@ -18,7 +18,7 @@ pip install -r requirements.txt
 python server/server_pot.py
 ```
 
-Open another session, then run the client. Afterwards, open your browser at `http://127.0.0.1:5000` to interact with the coffee pot.
+Open another session, then run the client. Afterwards, open your browser at `http://127.0.0.1:5031` to interact with the coffee pot.
 
 ```
 python webserver/webserver_coffee.py
