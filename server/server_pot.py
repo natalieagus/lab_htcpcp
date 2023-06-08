@@ -64,10 +64,17 @@ def main():
             f.write("")
 
     # start listening for connections
+    CHECK_INTERVAL = 1.0
+    server.settimeout(CHECK_INTERVAL) # Check for SIGINT every `CHECK_INTERVAL` seconds
     server.listen()
     print("Listening for connections on port " + str(PORT))
     while True:
-        connection, address = server.accept()
+
+        # Restart `accept` call every cycle, so a `SIGINT` can go through (for Windows)
+        try:
+            connection, address = server.accept()
+        except TimeoutError:
+            continue
 
         # set timeout so requests cannot hang
         connection.settimeout(5)
