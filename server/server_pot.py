@@ -221,7 +221,7 @@ def ensure_request_is_valid(
     url, content_type, method, connection, requested_pot
 ):
     processing_request = True
-    if "://" not in url:
+    if "coffee://" not in url:
         connection.send(b"HTCPCP/1.1 400 Bad Request\n\n")
         processing_request = False
 
