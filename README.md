@@ -21,13 +21,13 @@ python server/server_pot.py
 Open another session, then run the client. Afterwards, open your browser at `http://127.0.0.1:5031` to interact with the coffee pot.
 
 ```
-python webserver/webserver_coffee.py
+python webapp/webapp_coffee.py
 ```
 
 If you want to enable `https`, run it with the `-https` option:
 
 ```
-python webserver/webserver_coffee.py -https
+python webapp/webapp_coffee.py -https
 ```
 
 Since we are using self-signed cert with this, you might need to **manually** whitelist the site in your browser.
