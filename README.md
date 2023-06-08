@@ -84,4 +84,4 @@ This config file can be accessed by both the frontend and backend servers. This 
 
 ## Credits
 
-This project was originally taken from https://jamesg.blog/2021/11/18/hypertext-coffee-pot/, refactored and adapted with more functionalities added to suit our learning experience in the lab. Special thanks to CSE TAs Cassie and Ryan for the inspiration and ideas to create this lab.
+[The base code for project was originally taken from here](https://jamesg.blog/2021/11/18/hypertext-coffee-pot/), refactored, styled and adapted with more functionalities added to suit our learning experience in the lab. Special thanks to CSE TAs Cassie and Ryan for the inspiration, ideas, and contribution to create this lab.
