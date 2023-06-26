@@ -116,9 +116,8 @@ def handle_when_brew_post(message):
 
     response = data.split("\r\n")
     if data.find("418") != -1:
-        return (
-            render_template(ERROR_TEMPLATE, title="I'm a Teapot!", error=418),
-            418,
+        return render_template(
+            ERROR_TEMPLATE, title="I'm a Teapot!", error=418
         )
 
     try:
