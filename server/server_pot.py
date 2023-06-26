@@ -187,7 +187,7 @@ def main(argv):
                     headers, processing_request, pouring_milk, connection
                 )
 
-                if method in ACCEPTED_METHODS:
+                if processing_request and method in ACCEPTED_METHODS:
                     current_date = datetime.datetime.now().strftime(
                         TIME_STRING_FORMAT
                     )
@@ -207,6 +207,14 @@ def main(argv):
                     final_response = "".join(headers_to_send) + response
 
                     logging.info("Sending response: " + final_response)
+
+                elif not processing_request:
+                    final_response = (
+                        "HTCPCP/1.1 406 Not Acceptable\r\n\r\n"
+                        + ", ".join(list(ACCEPTED_ADDITIONS.keys())).strip(
+                            ", "
+                        )
+                    )
 
                 connection.send(bytes(final_response.encode("utf-8")))
 
@@ -270,12 +278,7 @@ def process_additions(headers, processing_request, pouring_milk, connection):
         pouring_milk = ""
         for item in additions:
             if ACCEPTED_ADDITIONS.get(item.lower().strip()) is None:
-                response = "HTCPCP/1.1 406 Not Acceptable\r\n\r\n" + ", ".join(
-                    list(ACCEPTED_ADDITIONS.keys())
-                ).strip(", ")
-                connection.send(bytes(response.encode()))
                 invalid_addition = True
-                processing_request = False
             elif item.lower() in MILKS and pouring_milk == "":
                 # pour milk in 10 secs, after brew
                 pouring_milk = (

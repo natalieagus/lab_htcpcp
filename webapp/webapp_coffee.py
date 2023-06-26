@@ -98,7 +98,7 @@ def index():
 
     else:
         return handle_homepage_render()
-
+    print(f"message: {message}")
     return handle_when_brew_post(message)
 
 
@@ -110,7 +110,10 @@ def handle_when_brew_post(message):
 
     server.send(bytes(message.encode()))
 
+    # get response from server
+    # TODO: handle other error code specified in HTCPCP instead of just 418
     data = server.recv(1024).decode()
+
     response = data.split("\r\n")
     if data.find("418") != -1:
         return (
@@ -197,6 +200,9 @@ def handle_homepage_render():
         milk_stopped = True
 
     additions = [addition.strip(" ") for addition in additions]
+
+    # TODO: inject more illegal additions here
+    ACCEPTED_ADDITIONS.update({"tea": "Chamomile"})
 
     return render_template(
         "index.html",

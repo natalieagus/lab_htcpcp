@@ -91,7 +91,7 @@
     // console.log(seconds)
     if (seconds > 0 || minutes > 0 || diff > 0) {
       add_timer.innerHTML = "Time left until coffee is ready: " + minutes + ":" + seconds;
-    } else {
+    } else if (add_timer != null) {
       add_timer.innerHTML = "Coffee is ready! ☕️" ;
       add_timer.style.fontWeight = "bold";
       add_timer.style.fontSize = "larger"
@@ -110,7 +110,7 @@
 
   countdown();
 
-  if (add_timer && add_timer.innerHTML != "Coffee is ready!") {
+  if (add_timer && add_timer != null && add_timer.innerHTML != "Coffee is ready!") {
     setInterval(countdown, 1000);
   }
 </script>
