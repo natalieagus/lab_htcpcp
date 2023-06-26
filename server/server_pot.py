@@ -23,6 +23,7 @@ from config import (
     COFFEE_BEANS,
     TIME_STRING_FORMAT,
     COFFEE_BEANS_VARIETY,
+    BREW_TIME,
 )
 import datetime
 import logging
@@ -121,7 +122,7 @@ def main(argv):
                     last_coffee["brew_time_end"], TIME_STRING_FORMAT
                 )
                 if (
-                    last_brewed + datetime.timedelta(seconds=10)
+                    last_brewed + datetime.timedelta(seconds=BREW_TIME)
                     > datetime.datetime.now()
                 ):
                     response = (
@@ -278,7 +279,8 @@ def process_additions(headers, processing_request, pouring_milk, connection):
             elif item.lower() in MILKS and pouring_milk == "":
                 # pour milk in 10 secs, after brew
                 pouring_milk = (
-                    datetime.datetime.now() + datetime.timedelta(seconds=10)
+                    datetime.datetime.now()
+                    + datetime.timedelta(seconds=BREW_TIME)
                 ).strftime(TIME_STRING_FORMAT)
 
         if invalid_addition:
@@ -313,7 +315,7 @@ def create_request_response(method, message, additions, pouring_milk):
         elif response_body == "start":
             now = datetime.datetime.now().strftime(TIME_STRING_FORMAT)
             end_time = (
-                datetime.datetime.now() + datetime.timedelta(seconds=10)
+                datetime.datetime.now() + datetime.timedelta(seconds=BREW_TIME)
             ).strftime(TIME_STRING_FORMAT)
             coffee_bean = COFFEE_BEANS[random.randint(0, COFFEE_BEANS_VARIETY)]
 

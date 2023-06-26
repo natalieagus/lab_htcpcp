@@ -1,6 +1,7 @@
 HOST = "0.0.0.0"
 LOCALHOST = "localhost"
 PORT = 5030
+BREW_TIME = 30
 WEBSERVER_PORT = 5031
 ERROR_TEMPLATE = "error.html"
 TIME_STRING_FORMAT = "%a, %d %b %Y %H:%M:%S"
