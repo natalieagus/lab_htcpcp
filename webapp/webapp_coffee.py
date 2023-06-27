@@ -111,7 +111,6 @@ def handle_when_brew_post(message):
     server.send(bytes(message.encode()))
 
     # get response from server
-    # TODO TASK 7: handle other status code specified in HTCPCP instead of just 418
     data = server.recv(1024).decode()
 
     response = data.split("\r\n")
@@ -119,6 +118,10 @@ def handle_when_brew_post(message):
         return render_template(
             ERROR_TEMPLATE, title="I'm a Teapot!", error=418
         )
+
+    ########################
+    # TODO TASK 7: handle other status code specified in HTCPCP instead of just 418
+    ########################
 
     try:
         previous_response_status = int(response[-1])
