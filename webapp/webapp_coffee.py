@@ -111,7 +111,7 @@ def handle_when_brew_post(message):
     server.send(bytes(message.encode()))
 
     # get response from server
-    # TODO: handle other error code specified in HTCPCP instead of just 418
+    # TODO TASK 7: handle other status code specified in HTCPCP instead of just 418
     data = server.recv(1024).decode()
 
     response = data.split("\r\n")
@@ -200,7 +200,7 @@ def handle_homepage_render():
 
     additions = [addition.strip(" ") for addition in additions]
 
-    # TODO: inject more illegal additions here
+    # You can inject more illegal additions here
     ACCEPTED_ADDITIONS.update({"tea": "Chamomile"})
 
     return render_template(
