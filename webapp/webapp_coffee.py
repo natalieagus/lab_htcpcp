@@ -26,7 +26,7 @@ from config import (
     HOST,
     LOCALHOST,
     WEBSERVER_PORT,
-    PORT,
+    COFFEE_SERVER_PORT,
     ERROR_TEMPLATE,
     MILKS,
     ACCEPTED_ADDITIONS,
@@ -106,7 +106,7 @@ def handle_when_brew_post(message):
     global previous_response_status
     # handles the cases when method is when, brew, or post
     server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    server.connect((HOST, PORT))
+    server.connect((HOST, COFFEE_SERVER_PORT))
 
     server.send(bytes(message.encode()))
 
@@ -130,7 +130,7 @@ def handle_when_brew_post(message):
 
 def handle_homepage_render():
     server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    server.connect((HOST, PORT))
+    server.connect((HOST, COFFEE_SERVER_PORT))
 
     message = "GET coffee://ducky HTTP/1.1\r\nContent-Type: application/coffee-pot-command\r\n\r\n"
 
@@ -221,7 +221,7 @@ def handle_homepage_render():
 
 def handle_coffee_data(message):
     server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    server.connect((HOST, PORT))
+    server.connect((HOST, COFFEE_SERVER_PORT))
 
     server.send(bytes(message.encode()))
 

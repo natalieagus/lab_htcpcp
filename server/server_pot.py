@@ -15,7 +15,7 @@ sys.path.append(config_dir)
 from config import (
     HOST,
     LOCALHOST,
-    PORT,
+    COFFEE_SERVER_PORT,
     ACCEPTED_COFFEE_SCHEMES,
     ACCEPTED_METHODS,
     MILKS,
@@ -60,7 +60,7 @@ def main(argv):
     if len(sys.argv) > 1 and sys.argv[1] == "-local":
         host = LOCALHOST
 
-    server.bind((host, PORT))
+    server.bind((host, COFFEE_SERVER_PORT))
 
     # rewrite the currently brewing file every time the program starts up
     # a coffee pot that has been stopped in the middle of operation should not pick up where it left off (!)
@@ -77,7 +77,9 @@ def main(argv):
         CHECK_INTERVAL
     )  # Check for SIGINT every `CHECK_INTERVAL` seconds
     server.listen()
-    print(f"Listening for connections on {str(host)}:{str(PORT)}")
+    print(
+        f"Listening for connections on {str(host)}:{str(COFFEE_SERVER_PORT)}"
+    )
     while True:
 
         # Restart `accept` call every cycle, so a `SIGINT` can go through (for Windows)
