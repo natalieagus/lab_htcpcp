@@ -42,7 +42,7 @@ As per the RFC, The Coffee Pot Server accepts these request headers:
 4. `GET`: Return information about the coffee currently brewing.
 5. `PROPFIND`: Return information about the coffee beans that are currently used for brewing. The Coffee Pot server selects this at random from 10 premium beans.
 
-It will take 10 seconds to brew a coffee pot, and the server can only brew one pot at a time. If the server is restarted in the middle of brewing, the coffee is gone (poof!), but etched in the log.
+It will take 30 seconds to brew a coffee pot, and the server can only brew one pot at a time. If the server is restarted in the middle of brewing, the coffee is gone (poof!), but etched in the log.
 
 ### How it works
 
