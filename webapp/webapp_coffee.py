@@ -66,40 +66,46 @@ previous_response_status = 0
 
 @app.route("/")
 def index():
-    additions = request.args.getlist("additions")
-    pots = request.args.getlist("pots")
-    method = request.args.get("method")
-    message_for_server = request.args.get("message")
-    if method:
-        method = method.lower()
+    try:
+        additions = request.args.getlist("additions")
+        pots = request.args.getlist("pots")
+        method = request.args.get("method")
+        message_for_server = request.args.get("message")
+        if method:
+            method = method.lower()
 
-        if not message_for_server:
-            message = ""
+            if not message_for_server:
+                message = ""
 
-    if message_for_server:
-        message_for_server = message_for_server.lower().strip()
+        if message_for_server:
+            message_for_server = message_for_server.lower().strip()
 
-    if (method == "brew" or method == "post") and (
-        message_for_server == "start" or message_for_server == "stop"
-    ):
-        message = "BREW coffee://ducky HTTP/1.1\r\nContent-Type: application/coffee-pot-command"
-        if additions:
-            message = message + "\r\nAccept-Additions: " + "; ".join(additions)
-        if pots:
-            message = message + "\r\nUse-Pot: " + "; ".join(pots)
-        message = message + "\r\n\r\n" + message_for_server
+        if (method == "brew" or method == "post") and (
+            message_for_server == "start" or message_for_server == "stop"
+        ):
+            message = "BREW coffee://ducky HTTP/1.1\r\nContent-Type: application/coffee-pot-command"
+            if additions:
+                message = (
+                    message + "\r\nAccept-Additions: " + "; ".join(additions)
+                )
+            if pots:
+                message = message + "\r\nUse-Pot: " + "; ".join(pots)
+            message = message + "\r\n\r\n" + message_for_server
 
-    elif method == "when":
-        message = "WHEN coffee://ducky HTTP/1.1\r\nContent-Type: application/coffee-pot-command\r\n\r\n"
+        elif method == "when":
+            message = "WHEN coffee://ducky HTTP/1.1\r\nContent-Type: application/coffee-pot-command\r\n\r\n"
 
-    elif method == "propfind":
-        message = "PROPFIND coffee://ducky HTTP/1.1\r\nContent-Type: application/coffee-pot-command\r\n\r\n"
-        return handle_coffee_data(message)
+        elif method == "propfind":
+            message = "PROPFIND coffee://ducky HTTP/1.1\r\nContent-Type: application/coffee-pot-command\r\n\r\n"
+            return handle_coffee_data(message)
 
-    else:
-        return handle_homepage_render()
-    print(f"message: {message}")
-    return handle_when_brew_post(message)
+        else:
+            return handle_homepage_render()
+        print(f"message: {message}")
+        return handle_when_brew_post(message)
+
+    except Exception as e:
+        return server_error(e)
 
 
 def handle_when_brew_post(message):
@@ -310,8 +316,11 @@ if __name__ == "__main__":
     n = len(sys.argv)
     ssl_context = None
     host = HOST
-    if "-https" in sys.argv:  # early termination makes this safe
-        ssl_context = "adhoc"
+    if "-https" in sys.argv:
+        if "-custom" in sys.argv:
+            ssl_context = ("cert.pem", "key.pem")
+        else:
+            ssl_context = "adhoc"
     if "-local" in sys.argv:
         host = LOCALHOST
 
