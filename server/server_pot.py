@@ -126,12 +126,10 @@ def main(argv):
                 if (
                     last_brewed + datetime.timedelta(seconds=BREW_TIME)
                     > datetime.datetime.now()
-                ):
+                ) and message.find("stop") == -1:
+                    # this is when you want to brew a coffee again when the pot is still brewing something
                     response = (
-                        "HTCPCP/1.1 406 Not Acceptable\r\n\r\n"
-                        + ", ".join(list(ACCEPTED_ADDITIONS.keys())).strip(
-                            ", "
-                        )
+                        "HTCPCP/1.1 406 Not Acceptable\r\n\r\n" + "Pot is busy"
                     )
                     connection.send(bytes(response.encode()))
                     processing_request = False
