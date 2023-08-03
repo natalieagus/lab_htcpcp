@@ -28,7 +28,7 @@ Installing this would label the relevant packets as HTCPCP, making your life eas
 
 3. Copy `htcpcp.lua` to the personal plugins directory.
    ```bash
-   cp ./dissector/htcpcp.lua [personal plugins directory]
+   cp ./dissector/htcpcp.lua [personal plugins directory]/htcpcp.lua
    ```
 4. Re-open Wireshark, or reload the plugins with `CTRL-SHIFT-L` or `CMD-SHIFT-L` for macOS users.
 
