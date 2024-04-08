@@ -22,14 +22,14 @@
     <li>{{ accepted_additions.get(addition) }}</li>
     {% endfor %}
   </ul>
-  {% endif %} {% if pouring_milk != "" %}
+  {% endif %} {% if pour_milk_start != "" and pour_milk_stop == false %}
   <p id="stop_pour">
     <a href="/?method=when"
       >Milk is being poured now. Click here to stop pouring milk in your
       coffee.</a
     >
   </p>
-  {% endif %} {% if milk_stopped %}
+  {% endif %} {% if pour_milk_stop %}
   <p>Milk has been added and stopped.</p>
   {% endif %}
   <p>

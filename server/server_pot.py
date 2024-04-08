@@ -36,14 +36,7 @@ brewing_file = "db/currently_brewing.json"
 past_coffee_file = "db/past_coffees.json"
 not_found_message = b"HTCPCP/1.1 404 Not Found\r\n\r\n"
 
-# states
-pouring_milk = None
-last_request = None
-
-
 def main(argv):
-    global pouring_milk
-    global last_request
     # Set seed
     random.seed(datetime.datetime.now().timestamp())
 
@@ -182,9 +175,9 @@ def main(argv):
                 (
                     additions,
                     processing_request,
-                    pouring_milk,
+                    pour_milk_start,
                 ) = process_additions(
-                    headers, processing_request, pouring_milk, connection
+                    headers, processing_request, connection
                 )
 
                 if processing_request and method in ACCEPTED_METHODS:
@@ -201,7 +194,7 @@ def main(argv):
                     ]
 
                     response = create_request_response(
-                        method, message, additions, pouring_milk
+                        method, message, additions, pour_milk_start
                     )
 
                     final_response = "".join(headers_to_send) + response
@@ -266,22 +259,24 @@ def ensure_request_is_valid(
     return processing_request
 
 
-def process_additions(headers, processing_request, pouring_milk, connection):
+def process_additions(headers, processing_request, connection):
     accept_additions = [
         header for header in headers if header.startswith("Accept-Additions")
     ]
+
+    pour_milk_start = ""
 
     if len(accept_additions) > 0:
         additions = accept_additions[0].split(":")[1].strip().split(";")
         invalid_addition = False
 
-        pouring_milk = ""
+        pour_milk_start = ""
         for item in additions:
             if ACCEPTED_ADDITIONS.get(item.lower().strip()) is None:
                 invalid_addition = True
-            elif item.lower() in MILKS and pouring_milk == "":
+            elif item.lower() in MILKS and pour_milk_start == "":
                 # pour milk in 10 secs, after brew
-                pouring_milk = (
+                pour_milk_start = (
                     datetime.datetime.now()
                     + datetime.timedelta(seconds=BREW_TIME)
                 ).strftime(TIME_STRING_FORMAT)
@@ -291,10 +286,10 @@ def process_additions(headers, processing_request, pouring_milk, connection):
     else:
         additions = None
 
-    return additions, processing_request, pouring_milk
+    return additions, processing_request, pour_milk_start
 
 
-def create_request_response(method, message, additions, pouring_milk):
+def create_request_response(method, message, additions, pour_milk_start):
     response = ""
 
     if method == "GET":
@@ -325,10 +320,10 @@ def create_request_response(method, message, additions, pouring_milk):
             if additions == None:
                 additions = []
 
-            if pouring_milk == None:
+            if pour_milk_start == None:
                 milk_status = ""
             else:
-                milk_status = pouring_milk
+                milk_status = pour_milk_start
 
             record_to_save = json.dumps(
                 {
@@ -336,8 +331,9 @@ def create_request_response(method, message, additions, pouring_milk):
                     "beverage_type": "Coffee",
                     "additions": additions,
                     "brew_time_end": end_time,
-                    "pouring_milk": milk_status,
+                    "pour_milk_start": milk_status,
                     "coffee_bean": coffee_bean,
+                    "pour_milk_stop": False
                 }
             )
 
@@ -352,9 +348,8 @@ def create_request_response(method, message, additions, pouring_milk):
     elif method == "WHEN":
         with open(brewing_file, "r") as f:
             response = json.load(f)
-
-        pouring_milk = datetime.datetime.strptime(
-            pouring_milk, TIME_STRING_FORMAT
+        pour_milk_start = datetime.datetime.strptime(
+            response.get("pour_milk_start"), TIME_STRING_FORMAT
         )
         brew_time_end_object = datetime.datetime.strptime(
             response.get("brew_time_end"), TIME_STRING_FORMAT
@@ -363,15 +358,27 @@ def create_request_response(method, message, additions, pouring_milk):
             datetime.datetime.now().strftime(TIME_STRING_FORMAT),
             TIME_STRING_FORMAT,
         )
-        if now >= brew_time_end_object and pouring_milk != None:
-            response = "299"  # "Milk has stopped pouring."
-        else:
-            response = "298"  # "Milk is not pouring."
-
-        pouring_milk = None
-
+        if now >= brew_time_end_object and pour_milk_start != None:
+            response["pour_milk_stop"] = True
+        update_current_brew(response)
+        # save to file 
+        response = json.dumps(response)
     return response
 
+
+def update_current_brew(response):
+    new_record = []
+    with open(brewing_file, 'r') as coffee_records:
+        for line in coffee_records:
+            current_coffee = json.loads(line)
+            if response.get("date", False) == current_coffee.get("date", False):
+                current_coffee["pour_milk_stop"] = response.get("pour_milk_stop", False)
+            new_record.append(json.dumps(current_coffee))
+            
+    # Write the modified content back to the file or a new file.
+    with open(brewing_file, 'w') as file:  # Use 'file_path' for the same file or 'new_file_path' for a new file.
+        for coffee_record in new_record:
+            file.write(coffee_record + '\n') 
 
 if __name__ == "__main__":
     try:

@@ -158,9 +158,9 @@ def handle_homepage_render():
     contains_milk = False
     brew_time = ""
     brew_time_end = ""
-    pouring_milk = None
+    pour_milk_start = "" 
     finish_brewing_unix = 0
-    milk_stopped = False
+    pour_milk_stop = False
 
     if data and data.strip():
         response = data.split("\r\n")
@@ -179,16 +179,16 @@ def handle_homepage_render():
 
             brew_time = brewing_description["date"]
             brew_time_end = brewing_description["brew_time_end"]
-            pouring_milk = brewing_description["pouring_milk"]
+            pour_milk_start = brewing_description["pour_milk_start"]
 
             finish_brewing_unix = datetime.datetime.strptime(
                 brew_time_end, TIME_STRING_FORMAT
             ).timestamp()
 
-            # convert pouring_milk to datetime
-            if pouring_milk != "":
-                pouring_milk = datetime.datetime.strptime(
-                    pouring_milk, TIME_STRING_FORMAT
+            # convert pour_milk_start to datetime
+            if pour_milk_start != "":
+                pour_milk_start = datetime.datetime.strptime(
+                    pour_milk_start, TIME_STRING_FORMAT
                 )
                 brew_time_end_object = datetime.datetime.strptime(
                     brew_time_end, TIME_STRING_FORMAT
@@ -200,19 +200,15 @@ def handle_homepage_render():
 
                 # is it time to pour milk? has coffee finished brewing?
                 if now <= brew_time_end_object:
-                    pouring_milk = ""
+                    pour_milk_start = ""
 
-    # check if we have stopped pouring milk
-    # print("previous_response_status", previous_response_status)
-    if previous_response_status == 299:
-        pouring_milk = ""
-        milk_stopped = True
+                # check if we have stopped pouring milk
+                pour_milk_stop = brewing_description.get("pour_milk_stop", False) 
 
     additions = [addition.strip(" ") for addition in additions]
 
     # You can inject more illegal additions here
     ACCEPTED_ADDITIONS.update({"tea": "Chamomile"})
-
     return render_template(
         "index.html",
         header="Welcome to Ducky's CoffeePot",
@@ -222,10 +218,10 @@ def handle_homepage_render():
         brew_time=brew_time,
         brew_time_end=brew_time_end,
         contains_milk=contains_milk,
-        pouring_milk=pouring_milk,
+        pour_milk_start=pour_milk_start,
         brewing=brewing,
         finish_brewing_unix=finish_brewing_unix,
-        milk_stopped=milk_stopped,
+        pour_milk_stop=pour_milk_stop,
     )
 
 
@@ -240,7 +236,6 @@ def handle_coffee_data(message):
 
     # get the coffee profile response
     coffee_bean = json.loads(response[-1].strip().replace("'", '"'))
-    print("coffee_bean", coffee_bean)
 
     return render_template(
         "coffeedata.html",
