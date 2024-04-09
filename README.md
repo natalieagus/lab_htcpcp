@@ -11,26 +11,25 @@ A decently working computer with Python 3.10 or above installed + pip. It is ass
 
 ## How to run
 
-Install the requirements, spawn the server:
+Install the requirements, run the main file:
 
 ```
 pip install -r requirements.txt
-python server/server_pot.py
-```
-
-Open another session, then run the client. Afterwards, open your browser at `http://127.0.0.1:5031` to interact with the coffee pot.
-
-```
-python webapp/webapp_coffee.py
+python main.py
 ```
 
 If you want to enable `https`, run it with the `-https` option:
 
 ```
-python webapp/webapp_coffee.py -https
+python main.py -https
 ```
 
 Since we are using self-signed cert with this, you might need to **manually** whitelist the site in your browser.
+
+Other options:
+
+1. `-local`: uses `localhost` instead of `0.0.0.0`
+2. `-custom`: uses custom self-signed certs, place `cert.pem` and `key.pem` under the root project directory
 
 ## Coffee Pot Server
 
