@@ -1,0 +1,117 @@
+{% extends "base.html" %} {% block content %}
+<section class="webmention social_interaction">
+  <h1>{{ header }} 🫖</h1>
+  {% if brewing == True %}
+  <h2>CoffeePot Status</h2>
+  <img src="/assets/coffee_pot.gif" alt="Animated image of a coffee brewing" />
+  <p id="add_timer"></p>
+
+  {% if brew_time %}
+  <p id="coffee_info">
+    <a href="/?method=propfind">Click here to find out about your beans.</a>
+  </p>
+  <p>Brewing began on {{ brew_time }}.</p>
+
+  <div id="brew_message">
+    <p>Brewing will finish on {{ brew_time_end }}.</p>
+  </div>
+  {% endif %} {% if additions %}
+  <p>The following additions were selected for your coffee:</p>
+  <ul>
+    {% for addition in additions %}
+    <li>{{ accepted_additions.get(addition) }}</li>
+    {% endfor %}
+  </ul>
+  {% endif %} {% if pour_milk_start != "" and pour_milk_stop == false %}
+  <p id="stop_pour">
+    <a href="/?method=when"
+      >Milk is being poured now. Click here to stop pouring milk in your
+      coffee.</a
+    >
+  </p>
+  {% endif %} {% if pour_milk_stop %}
+  <p>Milk has been added and stopped.</p>
+  {% endif %}
+  <p>
+    <a href="/?method=brew&message=stop" id="stop_message">
+      Stop brewing your coffee.
+    </a>
+  </p>
+
+  {% else %}
+  <h2>About CoffeePot</h2>
+  <p>
+    CoffeePot lets you send requests compliant with the
+    <a href="https://datatracker.ietf.org/doc/html/rfc2324">
+      Hyper Text Coffee Pot Control Protocol (HTCPCP)</a
+    >.
+  </p>
+  <p>
+    This protocol is useful if you want to remotely control a coffee pot or
+    machine using the internet.
+  </p>
+  <p>
+    This tool is currently configured to use a
+    <strong>digital (read: not real) coffee pot</strong>. <br /><br />
+    Be patient, CoffeePot can only brew <strong>one</strong> coffee pot at a
+    time.
+  </p>
+
+  {% include "includes/make_coffee_form.html" %} {% endif %}
+</section>
+<script>
+  var add_timer = document.getElementById("add_timer");
+  var stop_message = document.getElementById("stop_message")
+  var brew_message = document.getElementById("brew_message")
+  var coffeeBrewStarted = false;
+
+  function countdown() {
+
+    var now = new Date();
+    var diff = new Date({{ finish_brewing_unix }} * 1000) - now;
+    if (diff > 0 && !coffeeBrewStarted) {
+      coffeeBrewStarted = true;
+    }
+    var seconds = Math.floor(diff / 1000);
+    var minutes = Math.floor(seconds / 60);
+
+    minutes %= 60;
+    seconds %= 60;
+
+    // add padded 0
+    if (seconds < 10) {
+      seconds = "0" + seconds;
+    }
+
+    if (minutes < 10) {
+      minutes = "0" + minutes;
+    }
+
+
+    // console.log(seconds)
+    if (seconds > 0 || minutes > 0 || diff > 0) {
+      add_timer.innerHTML = "Time left until coffee is ready: " + minutes + ":" + seconds;
+    } else if (add_timer != null) {
+      add_timer.innerHTML = "Coffee is ready! ☕️" ;
+      add_timer.style.fontWeight = "bold";
+      add_timer.style.fontSize = "larger"
+      stop_message.innerHTML = "Brew a new pot."
+      brew_message.innerHTML = ""
+      if (coffeeBrewStarted){
+        coffeeBrewStarted = false
+        setTimeout(
+          function() {
+            window.location.reload(true);
+          }, 1000);
+
+      }
+    }
+  }
+
+  countdown();
+
+  if (add_timer && add_timer != null && add_timer.innerHTML != "Coffee is ready!") {
+    setInterval(countdown, 1000);
+  }
+</script>
+{% endblock %}

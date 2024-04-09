@@ -1,0 +1,15 @@
+{% extends "base.html" %} {% block content %} {% if error == 418 %}
+<section>
+  <h1>418</h1>
+  <p>I'm a Teapot 🍵. Don't brew coffee on me.</p>
+</section>
+{% else %}
+<section>
+  <h1>{{ error }}</h1>
+  <p>{{ title }}</p>
+</section>
+{% endif %}
+<a style="text-align: center" href="/?method=get"
+  >Back to your coffee homepage</a
+>
+{% endblock %}

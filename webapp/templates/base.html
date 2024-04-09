@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+
+    <title>{{ header }} | Ducky's Coffee Pot</title>
+
+    <link rel="stylesheet" href="/assets/styles.css" />
+
+    <link rel="icon" href="/assets/favicon.ico" />
+
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <style id="darkmode" media="none">
+      html {
+        background-color: #20172e;
+      }
+      button {
+        background-color: #8b38ff;
+      }
+      input[type="submit"] {
+        background-color: #ba7eff;
+        color: black;
+        font-weight: bold;
+      }
+      /* img {
+        filter: invert(1) hue-rotate(180deg);
+      } */
+      a {
+        color: #d4a9ff;
+      }
+      option {
+        color: white;
+      }
+      a:hover {
+        color: #ba7eff;
+        border-bottom: 0.5px white solid;
+      }
+      h1,
+      h2,
+      h3 {
+        color: white;
+      }
+      .social_interaction,
+      .webmention {
+        background: none;
+      }
+      p,
+      li,
+      dt,
+      dd,
+      .indieweb_footer,
+      input,
+      label,
+      td,
+      th {
+        color: #e4deeb;
+      }
+      input,
+      textarea,
+      select {
+        background-color: #4b4357;
+        color: white;
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <nav id="top_navigation">
+        <p><a href="/">CoffeePot</a></p>
+        <ul>
+          <li><a href="/log">CoffeePot Log</a></li>
+        </ul>
+      </nav>
+      <script>
+        if (
+          window.matchMedia &&
+          window.matchMedia("(prefers-color-scheme: dark)").matches
+        ) {
+          document.getElementById("darkmode").media = "all";
+        }
+
+        if (localStorage.getItem("darkmode") == "true") {
+          document.getElementById("darkmode").media = "all";
+        } else if (localStorage.getItem("darkmode") == "false") {
+          document.getElementById("darkmode").media = "none";
+        }
+
+        var navigation = document.getElementById("top_navigation");
+        var ul = navigation.getElementsByTagName("ul")[0];
+
+        var li = document.createElement("li");
+        var dark_style = document.getElementById("darkmode");
+
+        if (dark_style.media === "all") {
+          li.innerHTML = "<a onclick='toggleTheme();'>Light Mode</a>";
+        } else {
+          li.innerHTML = "<a onclick='toggleTheme();'>Dark Mode</a>";
+        }
+
+        ul.appendChild(li);
+
+        function toggleTheme() {
+          if (dark_style.media === "all") {
+            dark_style.media = "none";
+            li.innerHTML = "<a onclick='toggleTheme();'>Dark Mode</a>";
+            localStorage.setItem("darkmode", "false");
+          } else {
+            dark_style.media = "all";
+            li.innerHTML = "<a onclick='toggleTheme();'>Light Mode</a>";
+            localStorage.setItem("darkmode", "true");
+          }
+        }
+      </script>
+      {% block content %} {% endblock %}
+    </main>
+  </body>
+</html>

@@ -1,0 +1,15 @@
+{% extends "base.html" %} {% block content %}
+<section class="webmention social_interaction">
+  <h1>{{ header }} ☕</h1>
+  <p><strong>Type:</strong> {{ type }}</p>
+  <p><strong>Origin:</strong> {{ origin }}</p>
+  <p><strong>Profile:</strong> {{ profile }}</p>
+  <p><strong>Strength:</strong> {{ strength }}</p>
+  <p><strong>Roast:</strong> {{ roast }}</p>
+  <br />
+  <a style="text-align: center" href="/?method=get"
+    >Back to your coffee homepage</a
+  >
+</section>
+
+{% endblock %}
