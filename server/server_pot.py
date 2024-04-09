@@ -34,7 +34,7 @@ import os
 # standard constants
 brewing_file = "db/currently_brewing.json"
 past_coffee_file = "db/past_coffees.json"
-not_found_message = b"HTCPCP/1.1 404 Not Found\r\n\r\n"
+
 
 def main(argv):
     # Set seed
@@ -160,6 +160,9 @@ def main(argv):
                 method,
                 connection,
                 requested_pot,
+                ACCEPTED_COFFEE_SCHEMES,
+                ACCEPTED_METHODS,
+                b"HTCPCP/1.1 404 Not Found\r\n\r\n" 
             )
 
             if processing_request:
@@ -205,45 +208,43 @@ def main(argv):
         logging.info("Connection closed")
 
 
-def ensure_request_is_valid(
-    url, content_type, method, connection, requested_pot
-):
-    processing_request = True
-    if "coffee://" not in url:
-        connection.send(b"HTCPCP/1.1 400 Bad Request\n\n")
-        processing_request = False
+def send_error(connection, message):
+    """Send an error message to the connection and return False."""
+    connection.send(message)
+    return False
 
-    if (
-        url.split("://")[0].encode().decode("ascii")
-        not in ACCEPTED_COFFEE_SCHEMES
-    ):
-        connection.send(not_found_message)
-        processing_request = False
+def ensure_request_is_valid(url, content_type, method, connection, requested_pot,
+                            accepted_coffee_schemes, accepted_methods, not_found_message):
+    # Check if the URL scheme is correct
+    if "coffee://" not in url:
+        return send_error(connection, b"HTCPCP/1.1 400 Bad Request\n\n")
+
+    scheme = url.split("://")[0]
+    # Validate the scheme against accepted coffee schemes
+    if scheme not in accepted_coffee_schemes:
+        return send_error(connection, not_found_message)
+
+    # Check for specific URL path
     try:
         if url.split("://")[1] != "ducky":
-            connection.send(not_found_message)
-            processing_request = False
-    except Exception as _:
-        connection.send(not_found_message)
-        processing_request = False
+            return send_error(connection, not_found_message)
+    except IndexError:
+        return send_error(connection, not_found_message)
 
-    if method not in ACCEPTED_METHODS:
-        connection.send(b"HTCPCP/1.1 501 Not Implemented\r\n\r\n")
-        processing_request = False
+    # Validate the HTTP method
+    if method not in accepted_methods:
+        return send_error(connection, b"HTCPCP/1.1 501 Not Implemented\r\n\r\n")
 
-    if (
-        content_type
-        and content_type[0] != "Content-Type: application/coffee-pot-command"
-    ):
-        connection.send(b"HTCPCP/1.1 415 Unsupported Media Type\r\n\r\n")
-        processing_request = False
+    # Check the content type
+    if content_type and content_type[0] != "Content-Type: application/coffee-pot-command":
+        return send_error(connection, b"HTCPCP/1.1 415 Unsupported Media Type\r\n\r\n")
 
+    # Specific check for "tea" request
     if requested_pot == "tea":
-        connection.send(b"HTCPCP/1.1 418 I'm a Teapot\r\n\r\n")
-        processing_request = False
+        return send_error(connection, b"HTCPCP/1.1 418 I'm a Teapot\r\n\r\n")
 
-    return processing_request
-
+    # If all checks pass
+    return True
 
 def process_additions(headers, processing_request, connection):
     accept_additions = [
