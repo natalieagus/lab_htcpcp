@@ -10,6 +10,7 @@ from flask import (
 )
 import sys
 import os
+import re
 
 # Get the current directory
 current_dir = os.path.dirname(os.path.abspath(__file__))
@@ -116,19 +117,31 @@ def handle_when_brew_post(message):
     # get response from server
     data = server.recv(1024).decode()
 
+
     response = data.split("\r\n")
-    if data.find("418") != -1:
+    status = 404
+    try:
+        status = int(response[0].split()[1])
+    except ValueError:
+        print("The string does not represent an integer.")
+    
+    
+    if status == 418:
         return render_template(
-            ERROR_TEMPLATE, title="I'm a Teapot!", error=418
+            ERROR_TEMPLATE, title="I'm a Teapot!", error=status
         )
 
     ########################
     # TODO TASK 7: handle other status code specified in HTCPCP instead of just 418
     ########################
 
+    elif status == 200:
+        return redirect("/")
 
-    return redirect("/")
-
+    else:
+        return render_template(
+            ERROR_TEMPLATE, title="".joing(response[0].split()[2:]), error=status
+        )
 
 def handle_homepage_render():
     server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -156,6 +169,15 @@ def handle_homepage_render():
 
     if data and data.strip():
         response = data.split("\r\n")
+        status = 404
+        try:               
+            status = int(response[0].split()[1])
+        except ValueError:
+            print("The string does not represent an integer.") 
+        if status != 200:
+            return render_template(
+            ERROR_TEMPLATE, title=" ".join(response[0].split()[2:]), error=status
+            ) 
         if response[-1].strip() != "{}" and response[-1].strip() != "":
             brewing = True
 
