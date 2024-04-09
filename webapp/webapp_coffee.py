@@ -61,9 +61,6 @@ past_coffees_db = "db/past_coffees.json"
 # load config from config.py, this is relative to client_coffee.py
 app.config.from_pyfile("../config/config.py")
 
-# states
-previous_response_status = 0
-
 
 @app.route("/")
 def index():
@@ -110,7 +107,6 @@ def index():
 
 
 def handle_when_brew_post(message):
-    global previous_response_status
     # handles the cases when method is when, brew, or post
     server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     server.connect((COFFEE_SERVER_IP, COFFEE_SERVER_PORT))
@@ -130,10 +126,6 @@ def handle_when_brew_post(message):
     # TODO TASK 7: handle other status code specified in HTCPCP instead of just 418
     ########################
 
-    try:
-        previous_response_status = int(response[-1])
-    except Exception as _:
-        previous_response_status = 0
 
     return redirect("/")
 
