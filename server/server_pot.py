@@ -215,13 +215,17 @@ def send_error(connection, message):
 
 def ensure_request_is_valid(url, content_type, method, connection, requested_pot,
                             accepted_coffee_schemes, accepted_methods, not_found_message):
-    # TODO: request checking
     # Check if the URL scheme is correct
+    scheme = url.split("://")[0]
     # Validate the scheme against accepted coffee schemes
-    # Check for specific URL path
-    # Validate the HTTP method
-    # Check the content type
-    # Specific check for "tea" request
+    if scheme not in accepted_coffee_schemes:
+        return send_error(connection, b"HTCPCP/1.1 400 Bad Request\n\n")
+
+    # TODO: Complete further request checking
+    # Check for specific URL path: ://ducky, else return generic not_found_message
+    # Validate the HTCPCP method is under list of accepted_methods, else return 501
+    # Check the content type to match as specified in section 2.1.1 of the RFC, else return 415 
+    # Specific check for "tea" as requested_pot, else return 418 
     # If all checks pass
     return True
 
