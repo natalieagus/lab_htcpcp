@@ -252,13 +252,13 @@ def coffeepot_log():
     )
 
 def check_response_status(data):
-    status = 404
+    status = 0 
     response = ""
     if data and data.strip():
         response = data.split("\r\n")
         try:               
             status = int(response[0].split()[1])
-        except ValueError:
+        except:
             print("The string does not represent an integer.") 
     return status, response
 

@@ -215,31 +215,13 @@ def send_error(connection, message):
 
 def ensure_request_is_valid(url, content_type, method, connection, requested_pot,
                             accepted_coffee_schemes, accepted_methods, not_found_message):
+    # TODO: request checking
     # Check if the URL scheme is correct
-    scheme = url.split("://")[0]
     # Validate the scheme against accepted coffee schemes
-    if scheme not in accepted_coffee_schemes:
-        return send_error(connection, b"HTCPCP/1.1 400 Bad Request\n\n")
-
     # Check for specific URL path
-    try:
-        if url.split("://")[1] != "ducky":
-            return send_error(connection, not_found_message)
-    except IndexError:
-        return send_error(connection, not_found_message)
-
     # Validate the HTTP method
-    if method not in accepted_methods:
-        return send_error(connection, b"HTCPCP/1.1 501 Not Implemented\r\n\r\n")
-
     # Check the content type
-    if content_type and content_type[0] != "Content-Type: application/coffee-pot-command":
-        return send_error(connection, b"HTCPCP/1.1 415 Unsupported Media Type\r\n\r\n")
-
     # Specific check for "tea" request
-    if requested_pot == "tea":
-        return send_error(connection, b"HTCPCP/1.1 418 I'm a Teapot\r\n\r\n")
-
     # If all checks pass
     return True
 
