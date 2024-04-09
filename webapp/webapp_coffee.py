@@ -107,15 +107,25 @@ def index():
         return server_error(e)
 
 
-def handle_when_brew_post(message):
-    # handles the cases when method is when, brew, or post
+def connect_to_server(message):
     server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     server.connect((COFFEE_SERVER_IP, COFFEE_SERVER_PORT))
 
     server.send(bytes(message.encode()))
 
+    data = server.recv(1024)
+    now = datetime.datetime.now().strftime(TIME_STRING_FORMAT)
+    print(
+        f"\n=======================\nReceived data from server at {now}:\n{data}",
+    )
+    data = data.decode()
+    return data 
+
+
+def handle_when_brew_post(message):
+    # handles the cases when method is when, brew, or post
     # get response from server
-    data = server.recv(1024).decode()
+    data = connect_to_server(message)
 
 
     response = data.split("\r\n")
@@ -144,19 +154,7 @@ def handle_when_brew_post(message):
         )
 
 def handle_homepage_render():
-    server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    server.connect((COFFEE_SERVER_IP, COFFEE_SERVER_PORT))
-
-    message = "GET coffee://ducky HTTP/1.1\r\nContent-Type: application/coffee-pot-command\r\n\r\n"
-
-    server.send(bytes(message.encode()))
-
-    data = server.recv(1024)
-    now = datetime.datetime.now().strftime(TIME_STRING_FORMAT)
-    print(
-        f"\n=======================\nReceived data from server at {now}:\n{data}",
-    )
-    data = data.decode()
+    data = connect_to_server("GET coffee://ducky HTTP/1.1\r\nContent-Type: application/coffee-pot-command\r\n\r\n")
 
     brewing = False
     additions = ""
@@ -240,12 +238,7 @@ def handle_homepage_render():
 
 
 def handle_coffee_data(message):
-    server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    server.connect((COFFEE_SERVER_IP, COFFEE_SERVER_PORT))
-
-    server.send(bytes(message.encode()))
-
-    data = server.recv(1024).decode()
+    data = connect_to_server(message) 
     response = data.split("\r\n")
 
     # get the coffee profile response
@@ -281,7 +274,25 @@ def coffeepot_log():
         coffees_brewed_count=coffees_brewed_count,
     )
 
-
+@app.route("/test-400")
+def test_400():
+    data = connect_to_server("GET caffeine://ducky HTTP/1.1\r\nContent-Type: application/coffee-pot-command\r\n\r\n")
+    if data and data.strip():
+        response = data.split("\r\n")
+        status = 404
+        try:               
+            status = int(response[0].split()[1])
+        except ValueError:
+            print("The string does not represent an integer.") 
+        if status != 200:
+            return render_template(
+            ERROR_TEMPLATE, title=" ".join(response[0].split()[2:]), error=status
+            )  
+    else:
+        return render_template(
+            ERROR_TEMPLATE, title="Other error has occured", error=0
+            )   
+        
 @app.errorhandler(404)
 def page_not_found(e):
     return (
