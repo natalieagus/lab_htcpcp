@@ -50,7 +50,7 @@ def main(argv):
     # Get the local machine's IP address
     host = HOST
 
-    if len(sys.argv) > 1 and sys.argv[1] == "-local":
+    if len(sys.argv) > 1 and  "-local" in sys.argv:
         host = LOCALHOST
 
     server.bind((host, COFFEE_SERVER_PORT))
