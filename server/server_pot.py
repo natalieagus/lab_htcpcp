@@ -139,14 +139,6 @@ def main(argv):
                 if header.startswith("Content-Type")
             ]
 
-            safe = [header for header in headers if header.startswith("Safe:")]
-
-            if safe and safe[0] == "Yes":
-                message = last_request
-                method = message.split(" ")[0]
-                url = message.split(" ")[1]
-                headers = message.split("\r\n")
-
             try:
                 requested_pot = (
                     [
@@ -185,13 +177,8 @@ def main(argv):
                         TIME_STRING_FORMAT
                     )
 
-                    # response body
-                    headers_to_send = [
-                        "HTCPCP/1.1 200 OK\r\n",
-                        "Server: CoffeePot\r\n",
-                        "Content-Type: message/coffeepot\r\n",
-                        "Date: " + current_date + "\r\n\r\n",
-                    ]
+                    ## TODO: Create response headers 
+                    headers_to_send = []
 
                     response = create_request_response(
                         method, message, additions, pour_milk_start
@@ -202,12 +189,11 @@ def main(argv):
                     logging.info("Sending response: " + final_response)
 
                 elif not processing_request:
-                    final_response = (
-                        "HTCPCP/1.1 406 Not Acceptable\r\n\r\n"
-                        + ", ".join(list(ACCEPTED_ADDITIONS.keys())).strip(
-                            ", "
-                        )
-                    )
+                    # TODO: Handle other cases that passes ensure_request_is_valid but isn't supported
+                    # if we reach here, request is valid, but the server doesn't support this feature 
+                    # e.g: 406
+                    final_response = ""
+                    
 
                 connection.send(bytes(final_response.encode("utf-8")))
 
