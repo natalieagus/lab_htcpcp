@@ -119,7 +119,7 @@ def connect_to_server(message):
         f"\n=======================\nReceived data from server at {now}:\n{data}",
     )
     data = data.decode()
-    return data 
+    return data  
 
 
 def handle_when_brew_post(message):
@@ -127,31 +127,13 @@ def handle_when_brew_post(message):
     # get response from server
     data = connect_to_server(message)
 
+    # filter other error reply cases
+    status, response = check_response_status(data)
+    if (status != 200):
+        return craft_error_template(status, response)
 
-    response = data.split("\r\n")
-    status = 404
-    try:
-        status = int(response[0].split()[1])
-    except ValueError:
-        print("The string does not represent an integer.")
-    
-    
-    if status == 418:
-        return render_template(
-            ERROR_TEMPLATE, title="I'm a Teapot!", error=status
-        )
+    return redirect("/")
 
-    ########################
-    # TODO TASK 7: handle other status code specified in HTCPCP instead of just 418
-    ########################
-
-    elif status == 200:
-        return redirect("/")
-
-    else:
-        return render_template(
-            ERROR_TEMPLATE, title="".joing(response[0].split()[2:]), error=status
-        )
 
 def handle_homepage_render():
     data = connect_to_server("GET coffee://ducky HTTP/1.1\r\nContent-Type: application/coffee-pot-command\r\n\r\n")
@@ -165,17 +147,12 @@ def handle_homepage_render():
     finish_brewing_unix = 0
     pour_milk_stop = False
 
+    status, response = check_response_status(data)
+    if (status != 200):
+        return craft_error_template(status, response)
+    
     if data and data.strip():
         response = data.split("\r\n")
-        status = 404
-        try:               
-            status = int(response[0].split()[1])
-        except ValueError:
-            print("The string does not represent an integer.") 
-        if status != 200:
-            return render_template(
-            ERROR_TEMPLATE, title=" ".join(response[0].split()[2:]), error=status
-            ) 
         if response[-1].strip() != "{}" and response[-1].strip() != "":
             brewing = True
 
@@ -274,25 +251,62 @@ def coffeepot_log():
         coffees_brewed_count=coffees_brewed_count,
     )
 
-@app.route("/test-400")
-def test_400():
-    data = connect_to_server("GET caffeine://ducky HTTP/1.1\r\nContent-Type: application/coffee-pot-command\r\n\r\n")
+def check_response_status(data):
+    status = 404
+    response = ""
     if data and data.strip():
         response = data.split("\r\n")
-        status = 404
         try:               
             status = int(response[0].split()[1])
         except ValueError:
             print("The string does not represent an integer.") 
-        if status != 200:
-            return render_template(
-            ERROR_TEMPLATE, title=" ".join(response[0].split()[2:]), error=status
-            )  
+    return status, response
+
+def craft_error_template(status, response):
+    if status == 418:
+        print("TEAPOT")
+        return render_template(
+            ERROR_TEMPLATE, title="I'm a Teapot!", error=status
+        )
+    elif status == 406:
+        return render_template(
+            ERROR_TEMPLATE, title="Not Acceptable", error=status
+        )
+    elif status != 200:
+        return render_template(
+            ERROR_TEMPLATE, title=" ".join(response), error=status
+        )  
     else:
         return render_template(
-            ERROR_TEMPLATE, title="Other error has occured", error=0
+                ERROR_TEMPLATE, title="Other error has occured", error=0
             )   
-        
+    
+@app.route("/test-400")
+def test_400():
+    data = connect_to_server("GET caffeine://ducky HTTP/1.1\r\nContent-Type: application/coffee-pot-command\r\n\r\n")
+    status, response = check_response_status(data)
+    return craft_error_template(status, response)
+
+@app.route("/test-404")
+def test_404():
+    data = connect_to_server("GET coffee://psyduck HTTP/1.1\r\nContent-Type: application/coffee-pot-command\r\n\r\n")
+    status, response = check_response_status(data)
+    return craft_error_template(status, response)
+
+@app.route("/test-501")
+def test_501():
+    data = connect_to_server("MILK coffee://ducky HTTP/1.1\r\nContent-Type: application/coffee-pot-command\r\n\r\n")
+    status, response = check_response_status(data)
+    return craft_error_template(status, response)
+
+@app.route("/test-415")
+def test_415():
+    data = connect_to_server("GET coffee://ducky HTTP/1.1\r\nContent-Type: application/tea-pot-command\r\n\r\n")
+    status, response = check_response_status(data)
+    return craft_error_template(status, response)
+
+
+## HTTP error handling      
 @app.errorhandler(404)
 def page_not_found(e):
     return (

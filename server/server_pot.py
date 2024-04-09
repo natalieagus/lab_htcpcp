@@ -162,7 +162,7 @@ def main(argv):
                 requested_pot,
                 ACCEPTED_COFFEE_SCHEMES,
                 ACCEPTED_METHODS,
-                b"HTCPCP/1.1 404 Not Found\r\n\r\n" 
+                b"HTCPCP/1.1 404 Server Could Not be Found\r\n\r\n" 
             )
 
             if processing_request:
@@ -216,13 +216,10 @@ def send_error(connection, message):
 def ensure_request_is_valid(url, content_type, method, connection, requested_pot,
                             accepted_coffee_schemes, accepted_methods, not_found_message):
     # Check if the URL scheme is correct
-    if "coffee://" not in url:
-        return send_error(connection, b"HTCPCP/1.1 400 Bad Request\n\n")
-
     scheme = url.split("://")[0]
     # Validate the scheme against accepted coffee schemes
     if scheme not in accepted_coffee_schemes:
-        return send_error(connection, not_found_message)
+        return send_error(connection, b"HTCPCP/1.1 400 Bad Request\n\n")
 
     # Check for specific URL path
     try:
