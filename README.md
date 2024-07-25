@@ -11,10 +11,16 @@ A decently working computer with Python 3.10 or above installed + pip. It is ass
 
 ## How to run
 
-Install the requirements, run the main file:
+Using `pipenv`, install requirements stated in `Pipfile`, then start the shell:
 
 ```
-pip install -r requirements.txt
+pipenv install
+pipenv shell
+```
+
+You can spawn **both** processes from the main file:
+
+```
 python main.py
 ```
 
