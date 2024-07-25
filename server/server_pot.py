@@ -215,14 +215,18 @@ def send_error(connection, message):
 
 def ensure_request_is_valid(url, content_type, method, connection, requested_pot,
                             accepted_coffee_schemes, accepted_methods, not_found_message):
-    # TODO: request checking
-    # Check if the URL scheme is correct
-    # Validate the scheme against accepted coffee schemes
-    # Check for specific URL path
-    # Validate the HTTP method
-    # Check the content type
-    # Specific check for "tea" request
-    # If all checks pass
+    # TODO: Basic request checking 
+    """
+    This method checks if the URL scheme is correct. You shall: 
+    
+    1. Validate the scheme against accepted_coffee_schemes
+    2. Check for correct URL path format
+    3. Validate the HTTP method: check method against accepted_methods
+    4. Check the content type format to conform to "application/coffee-pot-command"
+    5. Specific check for "tea" pot request
+
+    If all checks pass, return True
+    """
     return True
 
 def process_additions(headers, processing_request, connection):
