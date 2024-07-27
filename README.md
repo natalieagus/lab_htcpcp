@@ -7,7 +7,7 @@ This project implements the [HTCPCP](https://datatracker.ietf.org/doc/html/rfc23
 
 ## System requirements
 
-A decently working computer with Python 3.10 or above installed + pip. It is assumed that `python` command is aliased to run python 3.10 or above. Otherwise, please change the commands accordingly.
+A decently working computer with Python 3.10 or above, but **not** 3.12 installed + pip. It is assumed that `python` command is aliased to run python 3.10 or above. Otherwise, please change the commands accordingly.
 
 ## How to run
 
