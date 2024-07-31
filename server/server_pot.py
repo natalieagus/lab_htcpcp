@@ -191,7 +191,7 @@ def main(argv):
 
                     logging.info("Sending response: " + final_response)
 
-                elif not processing_request:
+                else:
                     # TODO: Handle other cases that passes ensure_request_is_valid but isn't supported
                     # if we reach here, request is valid, but the server doesn't support this feature 
                     # e.g: 406
