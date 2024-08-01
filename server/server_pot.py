@@ -208,7 +208,7 @@ def main(argv):
         logging.info("Connection closed")
 
 
-def send_error(connection, message):
+def send_error_message(connection, message):
     """Send an error message to the connection and return False."""
     connection.send(message)
     return False
@@ -225,7 +225,9 @@ def ensure_request_is_valid(url, content_type, method, connection, requested_pot
     4. Check the content type format to conform to "application/coffee-pot-command"
     5. Specific check for "tea" pot request
 
-    If all checks pass, return True
+    If all checks pass, return True, otherwise return False
+
+    For each case 1 to 5 above, call send_error_message(error_message) with an appropriately crafted error message containing status code and reason-phrase. The arg not_found_message gives you a general idea of the format of the expected error message conforming to HTCPCP/1.0 protocol.
     """
     return True
 
