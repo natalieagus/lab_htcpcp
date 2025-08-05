@@ -199,6 +199,7 @@ def main(argv):
                     
 
                 connection.send(bytes(final_response.encode("utf-8")))
+                print(f"\n\nResponse Crafted:\n{final_response}")
 
             processing_request = False
 
