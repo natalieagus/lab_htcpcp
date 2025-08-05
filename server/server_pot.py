@@ -100,7 +100,7 @@ def main(argv):
             if len(message.strip().replace("\n", "").replace("\r", "")) == 0:
                 processing_request = False
 
-            logging.info("\nReceived message:\n" + message)
+            logging.info("\nHTCPCP Request received:\n" + message)
 
             # get last coffee
             with open(brewing_file, "r") as f:
@@ -199,7 +199,7 @@ def main(argv):
                     
 
                 connection.send(bytes(final_response.encode("utf-8")))
-                print(f"\n\nResponse Crafted:\n{final_response}")
+                print(f"\n\nHTCPCP Response Crafted:\n{final_response}")
 
             processing_request = False
 
