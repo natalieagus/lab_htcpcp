@@ -100,7 +100,7 @@ def main(argv):
             if len(message.strip().replace("\n", "").replace("\r", "")) == 0:
                 processing_request = False
 
-            logging.info("Received message: " + message)
+            logging.info("\nReceived message:\n" + message)
 
             # get last coffee
             with open(brewing_file, "r") as f:
