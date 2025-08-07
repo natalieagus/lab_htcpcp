@@ -14,6 +14,7 @@ sys.path.append(config_dir)
 
 from config import (
     HOST,
+    HOSTNAME,
     LOCALHOST,
     COFFEE_SERVER_PORT,
     ACCEPTED_COFFEE_SCHEMES,
@@ -208,7 +209,7 @@ def ensure_request_is_valid(
     This method checks if the URL scheme is correct. You shall:
 
     1. Validate the scheme against accepted_coffee_schemes
-    2. Check for correct URL path format
+    2. Check for correct URL path format <SCHEME>://<HOSTNAME>
     3. Validate the HTTP method: check method against accepted_methods
     4. Check the content type format to conform to "application/coffee-pot-command"
     5. Specific check for "tea" pot request

@@ -1,4 +1,5 @@
 HOST = "0.0.0.0"
+HOSTNAME = "ducky"
 COFFEE_SERVER_IP = "127.0.0.1"
 LOCALHOST = "localhost"
 COFFEE_SERVER_PORT = 5030
