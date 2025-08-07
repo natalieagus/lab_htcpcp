@@ -50,7 +50,7 @@ def main(argv):
     # Get the local machine's IP address
     host = HOST
 
-    if len(sys.argv) > 1 and  "-local" in sys.argv:
+    if len(sys.argv) > 1 and "-local" in sys.argv:
         host = LOCALHOST
 
     server.bind((host, COFFEE_SERVER_PORT))
@@ -66,23 +66,15 @@ def main(argv):
 
     # start listening for connections
     CHECK_INTERVAL = 1.0
-    server.settimeout(
-        CHECK_INTERVAL
-    )  # Check for SIGINT every `CHECK_INTERVAL` seconds
+    server.settimeout(CHECK_INTERVAL)  # Check for SIGINT every `CHECK_INTERVAL` seconds
     server.listen()
-    print(
-        f"Listening for connections on {str(host)}:{str(COFFEE_SERVER_PORT)}"
-    )
+    print(f"Listening for connections on {str(host)}:{str(COFFEE_SERVER_PORT)}")
     while True:
-
         # Restart `accept` call every cycle, so a `SIGINT` can go through (for Windows)
         try:
             connection, address = server.accept()
         except TimeoutError:
             continue
-
-        # set timeout so requests cannot hang
-        connection.settimeout(5)
 
         print("\n====================\nConnected to: ", address)
 
@@ -121,9 +113,7 @@ def main(argv):
                     > datetime.datetime.now()
                 ) and message.find("stop") == -1:
                     # this is when you want to brew a coffee again when the pot is still brewing something
-                    response = (
-                        "HTCPCP/1.1 406 Not Acceptable\r\n\r\n" + "Pot is busy"
-                    )
+                    response = "HTCPCP/1.1 406 Not Acceptable\r\n\r\n" + "Pot is busy"
                     connection.send(bytes(response.encode()))
                     processing_request = False
                 else:
@@ -134,18 +124,12 @@ def main(argv):
             headers = message.split("\r\n")
 
             content_type = [
-                header
-                for header in headers
-                if header.startswith("Content-Type")
+                header for header in headers if header.startswith("Content-Type")
             ]
 
             try:
                 requested_pot = (
-                    [
-                        header
-                        for header in headers
-                        if header.startswith("Use-Pot")
-                    ][0]
+                    [header for header in headers if header.startswith("Use-Pot")][0]
                     .split(":")[1]
                     .strip()
                     .split(";")
@@ -162,25 +146,20 @@ def main(argv):
                 requested_pot,
                 ACCEPTED_COFFEE_SCHEMES,
                 ACCEPTED_METHODS,
-                b"HTCPCP/1.1 404 Server Could Not be Found\r\n\r\n" 
+                b"HTCPCP/1.1 404 Server Could Not be Found\r\n\r\n",
             )
 
             if processing_request:
-
                 (
                     additions,
                     processing_request,
                     pour_milk_start,
-                ) = process_additions(
-                    headers, processing_request, connection
-                )
+                ) = process_additions(headers, processing_request, connection)
 
                 if processing_request and method in ACCEPTED_METHODS:
-                    current_date = datetime.datetime.now().strftime(
-                        TIME_STRING_FORMAT
-                    )
+                    current_date = datetime.datetime.now().strftime(TIME_STRING_FORMAT)
 
-                    ## TODO: Create response headers 
+                    ## TODO: Create response headers
                     headers_to_send = []
 
                     response = create_request_response(
@@ -193,10 +172,9 @@ def main(argv):
 
                 else:
                     # TODO: Handle other cases that passes ensure_request_is_valid but isn't supported
-                    # if we reach here, request is valid, but the server doesn't support this feature 
+                    # if we reach here, request is valid, but the server doesn't support this feature
                     # e.g: 406
                     final_response = ""
-                    
 
                 connection.send(bytes(final_response.encode("utf-8")))
                 print(f"\n\nHTCPCP Response Crafted:\n{final_response}")
@@ -214,12 +192,21 @@ def send_error_message(connection, message):
     connection.send(message)
     return False
 
-def ensure_request_is_valid(url, content_type, method, connection, requested_pot,
-                            accepted_coffee_schemes, accepted_methods, not_found_message):
-    # TODO: Basic request checking 
+
+def ensure_request_is_valid(
+    url,
+    content_type,
+    method,
+    connection,
+    requested_pot,
+    accepted_coffee_schemes,
+    accepted_methods,
+    not_found_message,
+):
+    # TODO: Basic request checking
     """
-    This method checks if the URL scheme is correct. You shall: 
-    
+    This method checks if the URL scheme is correct. You shall:
+
     1. Validate the scheme against accepted_coffee_schemes
     2. Check for correct URL path format
     3. Validate the HTTP method: check method against accepted_methods
@@ -231,6 +218,7 @@ def ensure_request_is_valid(url, content_type, method, connection, requested_pot
     For each case 1 to 5 above, call send_error_message(error_message) with an appropriately crafted error message containing status code and reason-phrase. The arg not_found_message gives you a general idea of the format of the expected error message conforming to HTCPCP/1.0 protocol.
     """
     return True
+
 
 def process_additions(headers, processing_request, connection):
     accept_additions = [
@@ -250,8 +238,7 @@ def process_additions(headers, processing_request, connection):
             elif item.lower() in MILKS and pour_milk_start == "":
                 # pour milk in 10 secs, after brew
                 pour_milk_start = (
-                    datetime.datetime.now()
-                    + datetime.timedelta(seconds=BREW_TIME)
+                    datetime.datetime.now() + datetime.timedelta(seconds=BREW_TIME)
                 ).strftime(TIME_STRING_FORMAT)
 
         if invalid_addition:
@@ -306,7 +293,7 @@ def create_request_response(method, message, additions, pour_milk_start):
                     "brew_time_end": end_time,
                     "pour_milk_start": milk_status,
                     "coffee_bean": coffee_bean,
-                    "pour_milk_stop": False
+                    "pour_milk_stop": False,
                 }
             )
 
@@ -334,24 +321,27 @@ def create_request_response(method, message, additions, pour_milk_start):
         if now >= brew_time_end_object and pour_milk_start != None:
             response["pour_milk_stop"] = True
         update_current_brew(response)
-        # save to file 
+        # save to file
         response = json.dumps(response)
     return response
 
 
 def update_current_brew(response):
     new_record = []
-    with open(brewing_file, 'r') as coffee_records:
+    with open(brewing_file, "r") as coffee_records:
         for line in coffee_records:
             current_coffee = json.loads(line)
             if response.get("date", False) == current_coffee.get("date", False):
                 current_coffee["pour_milk_stop"] = response.get("pour_milk_stop", False)
             new_record.append(json.dumps(current_coffee))
-            
+
     # Write the modified content back to the file or a new file.
-    with open(brewing_file, 'w') as file:  # Use 'file_path' for the same file or 'new_file_path' for a new file.
+    with open(
+        brewing_file, "w"
+    ) as file:  # Use 'file_path' for the same file or 'new_file_path' for a new file.
         for coffee_record in new_record:
-            file.write(coffee_record + '\n') 
+            file.write(coffee_record + "\n")
+
 
 if __name__ == "__main__":
     try:
